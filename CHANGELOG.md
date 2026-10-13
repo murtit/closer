@@ -15,7 +15,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Startseite zeigt die nächsten anstehenden Erinnerungen über alle Personen.
 - Tests für Modelle, Persistenz, Kontakt-Import und `PeopleViewModel`.
 - UI-Test-Target `CloserUITests`: Screenshot-Tests gehen die Hauptscreens (Heute, Personen, Person hinzufügen, Person, Erinnerung) im Light und Dark Mode durch.
-- Startargument `-demo-data` (nur Debug) startet die App mit festen Beispielpersonen in einem temporären Speicher, ohne echte Daten oder Benachrichtigungen anzufassen.
+- Startargument `-demo-data` (nur Debug) startet die App mit festen Beispielpersonen in einem temporären Speicher, ohne echte Daten oder Benachrichtigungen anzufassen. `-demo-appearance light|dark` erzwingt das Erscheinungsbild.
 - CI erstellt bei jedem Pull Request Screenshots im Simulator, lädt sie als Artefakt *Screenshots* hoch und zeigt sie in einem automatisch aktualisierten PR-Kommentar.
 
 ### Changed

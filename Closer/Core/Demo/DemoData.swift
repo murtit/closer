@@ -13,6 +13,13 @@ enum DemoData {
         ProcessInfo.processInfo.arguments.contains(launchArgument)
     }
 
+    /// `"light"` or `"dark"` from the `-demo-appearance <value>` launch argument. Forces the
+    /// appearance from inside the app, because switching the simulator's appearance from a UI
+    /// test does not reliably reach the app.
+    static var appearance: String? {
+        UserDefaults.standard.string(forKey: "demo-appearance")
+    }
+
     /// A view model on a fresh temporary store that never touches saved data, real
     /// notifications or the permission prompt.
     static func makeViewModel(now: Date = Date()) -> PeopleViewModel {

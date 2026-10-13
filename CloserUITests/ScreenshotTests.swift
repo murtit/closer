@@ -5,48 +5,52 @@ import XCTest
 final class ScreenshotTests: XCTestCase {
     @MainActor
     func testMainScreensLight() throws {
-        try captureMainScreens(appearance: .light, suffix: "light")
+        try captureMainScreens(appearance: "light")
     }
 
     @MainActor
     func testMainScreensDark() throws {
-        try captureMainScreens(appearance: .dark, suffix: "dark")
+        try captureMainScreens(appearance: "dark")
     }
 
     // MARK: - Flow
 
     @MainActor
-    private func captureMainScreens(appearance: XCUIDevice.Appearance, suffix: String) throws {
+    private func captureMainScreens(appearance: String) throws {
         continueAfterFailure = false
         XCUIDevice.shared.orientation = .portrait
-        XCUIDevice.shared.appearance = appearance
 
         let app = XCUIApplication()
         // `-demo-data` goes last: a dash argument followed by another one would be read as its value.
-        app.launchArguments = ["-AppleLanguages", "(de-CH)", "-AppleLocale", "de_CH", "-demo-data"]
+        app.launchArguments = [
+            "-AppleLanguages", "(de-CH)",
+            "-AppleLocale", "de_CH",
+            "-demo-appearance", appearance,
+            "-demo-data",
+        ]
         app.launch()
 
         XCTAssertTrue(app.staticTexts["Wem bist du heute nah?"].waitForExistence(timeout: 15))
-        snapshot("01-heute", suffix)
+        snapshot("01-heute", appearance)
 
         app.tabBars.buttons["Personen"].tap()
         let personRow = app.buttons["personRow.Lea Brunner"]
         XCTAssertTrue(personRow.waitForExistence(timeout: 5))
-        snapshot("02-personen", suffix)
+        snapshot("02-personen", appearance)
 
         app.navigationBars["Personen"].buttons["Person hinzufügen"].tap()
         XCTAssertTrue(app.navigationBars["Person hinzufügen"].waitForExistence(timeout: 5))
-        snapshot("03-person-hinzufuegen", suffix)
+        snapshot("03-person-hinzufuegen", appearance)
         app.navigationBars["Person hinzufügen"].buttons["Abbrechen"].tap()
 
         XCTAssertTrue(personRow.waitForExistence(timeout: 5))
         personRow.tap()
         XCTAssertTrue(app.navigationBars["Lea Brunner"].waitForExistence(timeout: 5))
-        snapshot("04-person", suffix)
+        snapshot("04-person", appearance)
 
         app.staticTexts["Spontanes Date planen"].firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Erinnerung"].waitForExistence(timeout: 5))
-        snapshot("05-erinnerung", suffix)
+        snapshot("05-erinnerung", appearance)
     }
 
     // MARK: - Helpers

@@ -8,6 +8,7 @@ struct CloserApp: App {
         WindowGroup {
             RootView()
                 .environment(viewModel)
+                .preferredColorScheme(Self.colorSchemeOverride)
                 .task { viewModel.syncNotifications() }
         }
     }
@@ -19,5 +20,16 @@ struct CloserApp: App {
         }
         #endif
         return PeopleViewModel()
+    }
+
+    private static var colorSchemeOverride: ColorScheme? {
+        #if DEBUG
+        switch DemoData.appearance {
+        case "light": return .light
+        case "dark": return .dark
+        default: break
+        }
+        #endif
+        return nil
     }
 }

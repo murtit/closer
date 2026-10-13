@@ -33,7 +33,7 @@ xcodebuild test -project Closer.xcodeproj -scheme Closer \
 
 `CloserUITests/ScreenshotTests.swift` startet die App mit dem Argument `-demo-data` (feste Beispielpersonen, nur Debug-Builds) und hält die Hauptscreens im Light und Dark Mode fest. In der CI werden die Bilder bei jedem Pull Request exportiert (`scripts/export-screenshots.py`), als Artefakt *Screenshots* hochgeladen und per `scripts/publish-screenshots.sh` als PR-Kommentar gezeigt. Die Bilddateien liegen dafür im Branch `ci-screenshots` unter `pr-<Nummer>/`.
 
-Lokal: in Xcode `⌘U` oder nur die UI-Tests mit `-only-testing:CloserUITests`. Die Screenshots stehen danach im Report Navigator beim jeweiligen Test. Die Demo-Daten lassen sich auch von Hand ansehen: Scheme › *Run* › *Arguments* › `-demo-data` hinzufügen.
+Lokal: in Xcode `⌘U` oder nur die UI-Tests mit `-only-testing:CloserUITests`. Die Screenshots stehen danach im Report Navigator beim jeweiligen Test. Die Demo-Daten lassen sich auch von Hand ansehen: Scheme › *Run* › *Arguments* › `-demo-data` hinzufügen. Mit `-demo-appearance dark` bzw. `light` lässt sich das Erscheinungsbild zusätzlich erzwingen.
 
 ## Projektstruktur
 
