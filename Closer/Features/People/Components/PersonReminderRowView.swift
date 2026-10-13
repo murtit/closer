@@ -16,21 +16,21 @@ struct PersonReminderRowView: View {
             Text(reminder.emoji)
                 .font(.system(size: 22))
                 .frame(width: 42, height: 42)
-                .background(Circle().fill(reminder.isEnabled ? Color.roseBlush : Color(.systemFill)))
+                .background(Circle().fill(reminder.isEnabled ? Color.closerAccentSoft : Color(.systemFill)))
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(reminder.title)
                     .foregroundStyle(reminder.isEnabled ? Color.primary : Color.secondary)
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundStyle(reminder.isEnabled ? Color.rosePrimary : Color.secondary)
+                    .foregroundStyle(reminder.isEnabled ? Color.closerAccent : Color.secondary)
             }
 
             Spacer()
 
             Toggle(reminder.title, isOn: $isEnabled)
                 .labelsHidden()
-                .tint(.rosePrimary)
+                .tint(.closerAccent)
         }
         .padding(.vertical, 2)
     }

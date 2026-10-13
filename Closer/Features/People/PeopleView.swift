@@ -27,6 +27,7 @@ struct PeopleView: View {
                     list
                 }
             }
+            .background(Color.closerBackground.ignoresSafeArea())
             .navigationTitle("Personen")
             .navigationDestination(for: Person.ID.self) { id in
                 PersonDetailView(personID: id)
@@ -42,7 +43,7 @@ struct PeopleView: View {
                 PersonFormView()
             }
         }
-        .tint(.rosePrimary)
+        .tint(.closerAccent)
     }
 
     private var list: some View {
@@ -56,9 +57,11 @@ struct PeopleView: View {
                         .accessibilityIdentifier("personRow.\(person.name)")
                     }
                 }
+                .listRowBackground(Color.closerSurface)
             }
         }
         .listStyle(.insetGrouped)
+        .closerListBackground()
     }
 
     private var emptyState: some View {
@@ -71,6 +74,7 @@ struct PeopleView: View {
                 showingAddPerson = true
             }
             .buttonStyle(.borderedProminent)
+            .foregroundStyle(.closerOnAccent)
         }
     }
 }

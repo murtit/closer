@@ -15,11 +15,11 @@ struct ContactActionButton: View {
                 Image(systemName: systemImage)
                     .font(.title3)
                     .frame(width: 52, height: 52)
-                    .background(Circle().fill(Color.roseBlush))
+                    .background(Circle().fill(Color.closerAccentSoft))
                 Text(title)
                     .font(.caption)
             }
-            .foregroundStyle(Color.roseDeep)
+            .foregroundStyle(Color.closerOnAccentSoft)
         }
         .buttonStyle(.plain)
         .disabled(url == nil)

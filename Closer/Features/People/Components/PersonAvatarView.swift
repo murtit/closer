@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Round contact photo, or initials on a brand gradient when there is no photo.
+/// Round contact photo, or initials on coral, as in the app icon when there is no photo.
 struct PersonAvatarView: View {
     let name: String
     let photoData: Data?
@@ -26,10 +26,10 @@ struct PersonAvatarView: View {
                     .scaledToFill()
             } else {
                 ZStack {
-                    LinearGradient(colors: [.rosePrimary, .roseDeep], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    Color.closerAvatar
                     Text(Person.initials(for: name))
                         .font(.system(size: size * 0.38, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.closerOnAvatar)
                 }
             }
         }

@@ -32,12 +32,16 @@ struct ReminderFormView: View {
     var body: some View {
         NavigationStack {
             Form {
-                whatSection
-                whenSection
-                if original != nil {
-                    deleteSection
+                Group {
+                    whatSection
+                    whenSection
+                    if original != nil {
+                        deleteSection
+                    }
                 }
+                .listRowBackground(Color.closerSurface)
             }
+            .closerListBackground()
             .navigationTitle(original == nil ? "Neue Erinnerung" : "Erinnerung")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -50,7 +54,7 @@ struct ReminderFormView: View {
                         .disabled(!canSave)
                 }
             }
-            .tint(.rosePrimary)
+            .tint(.closerAccent)
             .sheet(isPresented: $showingEmojiPicker) {
                 EmojiPickerView(selectedEmoji: $emoji)
                     .presentationDetents([.medium, .large])
@@ -69,7 +73,7 @@ struct ReminderFormView: View {
                     Text(emoji)
                         .font(.system(size: 28))
                         .frame(width: 52, height: 52)
-                        .background(Circle().fill(Color.roseBlush))
+                        .background(Circle().fill(Color.closerAccentSoft))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Emoji ändern")

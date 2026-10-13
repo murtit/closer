@@ -42,16 +42,20 @@ struct PersonFormView: View {
     var body: some View {
         NavigationStack {
             Form {
-                contactSection
-                relationshipSection
-                if isAdding {
-                    suggestionsSection
+                Group {
+                    contactSection
+                    relationshipSection
+                    if isAdding {
+                        suggestionsSection
+                    }
+                    detailsSection
+                    if !isAdding {
+                        deleteSection
+                    }
                 }
-                detailsSection
-                if !isAdding {
-                    deleteSection
-                }
+                .listRowBackground(Color.closerSurface)
             }
+            .closerListBackground()
             .navigationTitle(isAdding ? "Person hinzufügen" : "Person bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -64,7 +68,7 @@ struct PersonFormView: View {
                         .disabled(trimmedName.isEmpty)
                 }
             }
-            .tint(.rosePrimary)
+            .tint(.closerAccent)
             .contactPicker(isPresented: $showingContactPicker, onSelect: apply)
             .onChange(of: relationship.sortIndex) {
                 selectedSuggestions = Self.preselected(for: relationship)
@@ -131,7 +135,7 @@ struct PersonFormView: View {
                         Spacer()
                         Image(systemName: selectedSuggestions.contains(suggestion.id) ? "checkmark.circle.fill" : "circle")
                             .font(.title3)
-                            .foregroundStyle(selectedSuggestions.contains(suggestion.id) ? Color.rosePrimary : Color.secondary)
+                            .foregroundStyle(selectedSuggestions.contains(suggestion.id) ? Color.closerAccent : Color.secondary)
                     }
                 }
                 .accessibilityAddTraits(selectedSuggestions.contains(suggestion.id) ? .isSelected : [])

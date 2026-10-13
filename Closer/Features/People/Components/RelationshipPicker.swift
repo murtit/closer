@@ -54,13 +54,13 @@ struct RelationshipPicker: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(isSelected ? Color.roseBlush : Color(.tertiarySystemFill))
+                    .fill(isSelected ? Color.closerAccentSoft : Color(.tertiarySystemFill))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .strokeBorder(isSelected ? Color.rosePrimary : .clear, lineWidth: 1.5)
+                    .strokeBorder(isSelected ? Color.closerAccent : .clear, lineWidth: 1.5)
             )
-            .foregroundStyle(isSelected ? Color.roseDeep : Color.primary)
+            .foregroundStyle(isSelected ? Color.closerOnAccentSoft : Color.primary)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
