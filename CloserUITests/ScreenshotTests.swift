@@ -51,6 +51,15 @@ final class ScreenshotTests: XCTestCase {
         app.staticTexts["Spontanes Date planen"].firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Erinnerung"].waitForExistence(timeout: 5))
         snapshot("05-erinnerung", appearance)
+        app.navigationBars["Erinnerung"].buttons["Abbrechen"].tap()
+
+        XCTAssertTrue(app.navigationBars["Lea Brunner"].waitForExistence(timeout: 5))
+        app.tabBars.buttons["Heute"].tap()
+        let settingsButton = app.buttons["Einstellungen"]
+        XCTAssertTrue(settingsButton.waitForExistence(timeout: 5))
+        settingsButton.tap()
+        XCTAssertTrue(app.navigationBars["Einstellungen"].waitForExistence(timeout: 5))
+        snapshot("06-einstellungen", appearance)
     }
 
     // MARK: - Helpers
