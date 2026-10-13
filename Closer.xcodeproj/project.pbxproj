@@ -14,11 +14,19 @@
 			remoteGlobalIDString = D22D09C12FF3391800F393C3;
 			remoteInfo = Closer;
 		};
+		D22D09DB2FF3391900F393C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D22D09BA2FF3391800F393C3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D22D09C12FF3391800F393C3;
+			remoteInfo = Closer;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		D22D09C22FF3391800F393C3 /* Closer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Closer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D22D09D02FF3391900F393C3 /* CloserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CloserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D22D09DC2FF3391900F393C3 /* CloserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CloserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -30,6 +38,11 @@
 		D22D09D12FF3391900F393C3 /* CloserTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = CloserTests;
+			sourceTree = "<group>";
+		};
+		D22D09DD2FF3391900F393C3 /* CloserUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CloserUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -49,6 +62,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D22D09DE2FF3391900F393C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -57,6 +77,7 @@
 			children = (
 				D22D09C42FF3391800F393C3 /* Closer */,
 				D22D09D12FF3391900F393C3 /* CloserTests */,
+				D22D09DD2FF3391900F393C3 /* CloserUITests */,
 				D22D09C32FF3391800F393C3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,6 +87,7 @@
 			children = (
 				D22D09C22FF3391800F393C3 /* Closer.app */,
 				D22D09D02FF3391900F393C3 /* CloserTests.xctest */,
+				D22D09DC2FF3391900F393C3 /* CloserUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -118,6 +140,29 @@
 			productReference = D22D09D02FF3391900F393C3 /* CloserTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		D22D09E12FF3391900F393C3 /* CloserUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D22D09E52FF3391900F393C3 /* Build configuration list for PBXNativeTarget "CloserUITests" */;
+			buildPhases = (
+				D22D09DF2FF3391900F393C3 /* Sources */,
+				D22D09DE2FF3391900F393C3 /* Frameworks */,
+				D22D09E02FF3391900F393C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D22D09E22FF3391900F393C3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D22D09DD2FF3391900F393C3 /* CloserUITests */,
+			);
+			name = CloserUITests;
+			packageProductDependencies = (
+			);
+			productName = CloserUITests;
+			productReference = D22D09DC2FF3391900F393C3 /* CloserUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -132,6 +177,10 @@
 						CreatedOnToolsVersion = 26.6;
 					};
 					D22D09D52FF3391900F393C3 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = D22D09C12FF3391800F393C3;
+					};
+					D22D09E12FF3391900F393C3 = {
 						CreatedOnToolsVersion = 26.6;
 						TestTargetID = D22D09C12FF3391800F393C3;
 					};
@@ -153,6 +202,7 @@
 			targets = (
 				D22D09C12FF3391800F393C3 /* Closer */,
 				D22D09D52FF3391900F393C3 /* CloserTests */,
+				D22D09E12FF3391900F393C3 /* CloserUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -166,6 +216,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D22D09D42FF3391900F393C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D22D09E02FF3391900F393C3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -189,6 +246,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D22D09DF2FF3391900F393C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -196,6 +260,11 @@
 			isa = PBXTargetDependency;
 			target = D22D09C12FF3391800F393C3 /* Closer */;
 			targetProxy = D22D09D62FF3391900F393C3 /* PBXContainerItemProxy */;
+		};
+		D22D09E22FF3391900F393C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D22D09C12FF3391800F393C3 /* Closer */;
+			targetProxy = D22D09DB2FF3391900F393C3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -429,6 +498,46 @@
 			};
 			name = Release;
 		};
+		D22D09E32FF3391900F393C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N2TMYQGQJS;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.murtit.closer.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Closer;
+			};
+			name = Debug;
+		};
+		D22D09E42FF3391900F393C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N2TMYQGQJS;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.murtit.closer.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Closer;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -455,6 +564,15 @@
 			buildConfigurations = (
 				D22D09D82FF3391900F393C3 /* Debug */,
 				D22D09D92FF3391900F393C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D22D09E52FF3391900F393C3 /* Build configuration list for PBXNativeTarget "CloserUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D22D09E32FF3391900F393C3 /* Debug */,
+				D22D09E42FF3391900F393C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -53,6 +53,7 @@ struct PeopleView: View {
                         NavigationLink(value: person.id) {
                             PersonRowView(person: person)
                         }
+                        .accessibilityIdentifier("personRow.\(person.name)")
                     }
                 }
             }

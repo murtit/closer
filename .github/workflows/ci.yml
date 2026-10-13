@@ -14,7 +14,10 @@ jobs:
   build-and-test:
     name: Build & Test (iOS Simulator)
     runs-on: macos-26
-    timeout-minutes: 30
+    timeout-minutes: 45
+    permissions:
+      contents: write        # push screenshots to the ci-screenshots branch
+      pull-requests: write   # post the screenshot comment
     steps:
       - uses: actions/checkout@v4
 
@@ -32,6 +35,13 @@ jobs:
             | python3 -c 'import json,sys; d=json.load(sys.stdin)["devices"]; print(next(x["udid"] for r,ds in sorted(d.items(), reverse=True) if "iOS" in r for x in ds if x["name"].startswith("iPhone")))')
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
 
+      - name: Boot simulator with a clean status bar
+        run: |
+          xcrun simctl bootstatus "${{ steps.sim.outputs.udid }}" -b
+          xcrun simctl status_bar "${{ steps.sim.outputs.udid }}" override \
+            --time 9:41 --dataNetwork wifi --wifiBars 3 --cellularBars 4 \
+            --batteryState charged --batteryLevel 100
+
       - name: Build & test
         run: |
           set -o pipefail
@@ -41,6 +51,29 @@ jobs:
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -resultBundlePath build/TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Export screenshots
+        if: ${{ !cancelled() }}
+        run: python3 scripts/export-screenshots.py build/TestResults.xcresult build/Screenshots
+
+      - name: Upload screenshots
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Screenshots
+          path: build/Screenshots/*.png
+          if-no-files-found: ignore
+
+      # Forks get a read-only token, so only PRs from branches of this repository are commented.
+      - name: Post screenshots on the pull request
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: scripts/publish-screenshots.sh build/Screenshots
 
       - name: Upload test results
         if: failure()

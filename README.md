@@ -29,6 +29,12 @@ xcodebuild test -project Closer.xcodeproj -scheme Closer \
   -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO
 ```
 
+### Screenshots & UI-Tests
+
+`CloserUITests/ScreenshotTests.swift` startet die App mit dem Argument `-demo-data` (feste Beispielpersonen, nur Debug-Builds) und hält die Hauptscreens im Light und Dark Mode fest. In der CI werden die Bilder bei jedem Pull Request exportiert (`scripts/export-screenshots.py`), als Artefakt *Screenshots* hochgeladen und per `scripts/publish-screenshots.sh` als PR-Kommentar gezeigt. Die Bilddateien liegen dafür im Branch `ci-screenshots` unter `pr-<Nummer>/`.
+
+Lokal: in Xcode `⌘U` oder nur die UI-Tests mit `-only-testing:CloserUITests`. Die Screenshots stehen danach im Report Navigator beim jeweiligen Test. Die Demo-Daten lassen sich auch von Hand ansehen: Scheme › *Run* › *Arguments* › `-demo-data` hinzufügen. Mit `-demo-appearance dark` bzw. `light` lässt sich das Erscheinungsbild zusätzlich erzwingen.
+
 ## Projektstruktur
 
 ```
@@ -36,6 +42,7 @@ closer/
 ├── Closer/                     # App-Target (Xcode-synchronisierter Ordner)
 │   ├── App/                    # Einstiegspunkt (@main) und Root-Navigation
 │   ├── Core/
+│   │   ├── Demo/               # Beispieldaten für UI-Tests und Screenshots (nur Debug)
 │   │   ├── Models/             # Domänenmodelle (Person, Relationship, Reminder), UI-unabhängig
 │   │   └── Services/           # Persistenz, Benachrichtigungen, Kontakt-Import
 │   ├── DesignSystem/           # Farben, Typografie, wiederverwendbare Komponenten
@@ -46,13 +53,14 @@ closer/
 │   │       └── Components/
 │   └── Resources/              # Asset-Kataloge, Lokalisierung
 ├── CloserTests/                # Unit-Tests (Swift Testing), spiegelt die App-Struktur
+├── CloserUITests/              # UI- und Screenshot-Tests (XCTest)
 ├── Closer.xcodeproj/           # Xcode-Projekt inkl. geteiltem Scheme
 ├── docs/                       # Entwickler-Dokumentation (Releases, Konventionen)
 ├── scripts/                    # Hilfsskripte (z. B. Versionierung)
 └── .github/                    # CI, PR- und Issue-Vorlagen, CODEOWNERS
 ```
 
-Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien in `Closer/` oder `CloserTests/` werden automatisch ins jeweilige Target aufgenommen. Es muss nichts manuell im Projekt-Navigator registriert werden.
+Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien in `Closer/`, `CloserTests/` oder `CloserUITests/` werden automatisch ins jeweilige Target aufgenommen. Es muss nichts manuell im Projekt-Navigator registriert werden.
 
 ### Architektur
 

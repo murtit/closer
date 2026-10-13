@@ -41,6 +41,17 @@
                ReferencedContainer = "container:Closer.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D22D09E12FF3391900F393C3"
+               BuildableName = "CloserUITests.xctest"
+               BlueprintName = "CloserUITests"
+               ReferencedContainer = "container:Closer.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

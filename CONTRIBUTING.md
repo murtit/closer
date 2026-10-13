@@ -32,7 +32,7 @@ Breaking Changes werden mit `!` (z. B. `feat!: …`) oder einem `BREAKING CHANGE
 1. Branch von `main` erstellen.
 2. Änderungen inkl. Tests umsetzen, `⌘U` muss grün sein.
 3. Eintrag unter `## [Unreleased]` in `CHANGELOG.md` ergänzen.
-4. PR mit der Vorlage öffnen: Zusammenfassung, Akzeptanzkriterien, Screenshots bei UI-Änderungen, manuelle Schritte.
+4. PR mit der Vorlage öffnen: Zusammenfassung, Akzeptanzkriterien, Screenshots bei UI-Änderungen, manuelle Schritte. Die CI postet Screenshots der Hauptscreens automatisch als Kommentar; neue Screens bitte in `CloserUITests/ScreenshotTests.swift` ergänzen.
 5. CI muss grün sein und mindestens ein Review (CODEOWNERS) vorliegen.
 6. Merge per **Squash & Merge**, der PR-Titel wird zur Commit-Nachricht und folgt daher ebenfalls Conventional Commits.
 
