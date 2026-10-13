@@ -15,7 +15,7 @@ struct AppearancePreferenceTests {
 
     @Test func offersAllThreeChoicesWithSystemFirst() {
         #expect(AppearancePreference.allCases == [.system, .light, .dark])
-        #expect(AppearancePreference.allCases.map(\.title) == ["Wie iPhone", "Hell", "Dunkel"])
+        #expect(AppearancePreference.allCases.map(\.title) == ["Automatisch", "Hell", "Dunkel"])
     }
 
     @Test func storedValuesRoundTrip() {

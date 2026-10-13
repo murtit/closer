@@ -20,7 +20,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Erscheinungsbild")
                 } footer: {
-                    Text("„Wie iPhone“ folgt der Einstellung unter Anzeige & Helligkeit.")
+                    Text("„Automatisch“ folgt der iPhone-Einstellung unter Anzeige & Helligkeit.")
                 }
                 .listRowBackground(Color.closerSurface)
             }
