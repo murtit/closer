@@ -13,7 +13,7 @@ nonisolated enum AppearancePreference: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .system: "Wie iPhone"
+        case .system: "Automatisch"
         case .light: "Hell"
         case .dark: "Dunkel"
         }
@@ -21,7 +21,7 @@ nonisolated enum AppearancePreference: String, CaseIterable, Identifiable {
 
     var systemImage: String {
         switch self {
-        case .system: "iphone"
+        case .system: "circle.lefthalf.filled"
         case .light: "sun.max.fill"
         case .dark: "moon.fill"
         }

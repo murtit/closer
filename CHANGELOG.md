@@ -18,7 +18,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Startargument `-demo-data` (nur Debug) startet die App mit festen Beispielpersonen in einem temporären Speicher, ohne echte Daten oder Benachrichtigungen anzufassen. `-demo-appearance light|dark` erzwingt das Erscheinungsbild.
 - CI erstellt bei jedem Pull Request Screenshots im Simulator, lädt sie als Artefakt *Screenshots* hoch und zeigt sie in einem automatisch aktualisierten PR-Kommentar.
 - Neues App-Icon: zwei leicht überlappende Kreise in Korallorange (`#F5A58C`) und Creme-Rosé (`#F8F3E9`) auf tiefem Tannengrün (`#10231F`), inklusive Dark- und Tinted-Variante. Quelle als SVG unter `design/app-icon/`, erzeugt mit `scripts/generate-app-icon.py`; die CI prüft, dass die PNGs zur Vorlage passen.
-- **Einstellungen** (Zahnrad auf „Heute“): Erscheinungsbild „Wie iPhone“, „Hell“ oder „Dunkel“ direkt in der App wählen. Standard ist „Wie iPhone“.
+- **Einstellungen** (Zahnrad auf „Heute“): Erscheinungsbild „Automatisch“, „Hell“ oder „Dunkel“ direkt in der App wählen. Standard ist „Automatisch“.
 - Design-System mit semantischen Farb-Tokens (`Palette`, `Color+Theme`), je mit Light- und Dark-Variante, plus `CloserMarkView` (Bildmarke des Icons). Tests prüfen Markenfarben und WCAG-Kontrast (≥ 4.5:1) aller Text/Hintergrund-Paare in beiden Modi.
 
 ### Changed
