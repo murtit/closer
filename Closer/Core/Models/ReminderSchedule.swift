@@ -94,6 +94,7 @@ struct ReminderSchedule: Codable, Equatable, Hashable {
             let formatter = DateFormatter()
             formatter.locale = locale
             formatter.calendar = calendar
+            formatter.timeZone = calendar.timeZone
             formatter.setLocalizedDateFormatFromTemplate("EEEEdMMMM")
             return "Am \(formatter.string(from: date)) um \(time)"
         case .daily:
