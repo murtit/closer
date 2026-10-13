@@ -14,6 +14,9 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Personen-Detail mit Schnellaktionen zum Anrufen, Schreiben und Mailen.
 - Startseite zeigt die nächsten anstehenden Erinnerungen über alle Personen.
 - Tests für Modelle, Persistenz, Kontakt-Import und `PeopleViewModel`.
+- UI-Test-Target `CloserUITests`: Screenshot-Tests gehen die Hauptscreens (Heute, Personen, Person hinzufügen, Person, Erinnerung) im Light und Dark Mode durch.
+- Startargument `-demo-data` (nur Debug) startet die App mit festen Beispielpersonen in einem temporären Speicher, ohne echte Daten oder Benachrichtigungen anzufassen.
+- CI erstellt bei jedem Pull Request Screenshots im Simulator, lädt sie als Artefakt *Screenshots* hoch und zeigt sie in einem automatisch aktualisierten PR-Kommentar.
 
 ### Changed
 - Der Tab „Erinnerungen“ ist durch „Personen“ ersetzt; Erinnerungen gehören jetzt immer zu einer Person.
