@@ -3,12 +3,13 @@ import SwiftUI
 @main
 struct CloserApp: App {
     @State private var viewModel = CloserApp.makeViewModel()
+    @AppStorage(AppearancePreference.storageKey) private var appearance: AppearancePreference = .system
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(viewModel)
-                .preferredColorScheme(Self.colorSchemeOverride)
+                .preferredColorScheme(Self.colorSchemeOverride ?? appearance.colorScheme)
                 .task { viewModel.syncNotifications() }
         }
     }
