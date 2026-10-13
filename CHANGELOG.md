@@ -7,6 +7,23 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Added
+- **Personen**: Mehrere Personen mit Beziehung (Partner:in, Familie, Freunde oder eigene Bezeichnung) erfassen, bearbeiten und löschen.
+- Kontakt-Import über den System-Kontaktpicker: Name, Foto, Telefonnummer (Mobilnummer bevorzugt) und E-Mail werden übernommen, ohne dass Closer Zugriff auf alle Kontakte braucht.
+- Erinnerungen pro Person, einmalig, täglich, wöchentlich oder monatlich, mit Vorschlägen je Beziehung (z. B. „Blumen kaufen“ für Partner:in, „Anrufen und fragen, wie es geht“ für Familie, „Melden und etwas abmachen“ für Freunde).
+- Personen-Detail mit Schnellaktionen zum Anrufen, Schreiben und Mailen.
+- Startseite zeigt die nächsten anstehenden Erinnerungen über alle Personen.
+- Tests für Modelle, Persistenz, Kontakt-Import und `PeopleViewModel`.
+
+### Changed
+- Der Tab „Erinnerungen“ ist durch „Personen“ ersetzt; Erinnerungen gehören jetzt immer zu einer Person.
+- Daten werden als JSON-Datei in *Application Support* gespeichert statt in `UserDefaults`.
+- Benachrichtigungen zeigen den Namen der Person als Titel und werden beim App-Start mit den gespeicherten Daten abgeglichen.
+- Emoji-Auswahl nach `DesignSystem/Components` verschoben und um Freundschafts- und Alltags-Emojis ergänzt.
+
+### Removed
+- Globale „Liebesgesten“ aus 0.1.0. Bestehende Einträge können keiner Person zugeordnet werden; ihre geplanten Benachrichtigungen werden beim ersten Start entfernt.
+
 ## [0.1.0] - 2026-10-13
 
 ### Added

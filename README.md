@@ -1,6 +1,6 @@
 # Closer
 
-**Closer** ist eine iOS-App, die dir hilft, soziale Kontakte bewusst zu pflegen und die Menschen, die dir wichtig sind, näher bei dir zu halten. Kleine, wiederkehrende Gesten werden als tägliche Erinnerungen geplant, damit Beziehungen im Alltag nicht untergehen.
+**Closer** ist eine iOS-App, die dir hilft, soziale Kontakte bewusst zu pflegen und die Menschen, die dir wichtig sind, näher bei dir zu halten. Du erfasst Personen (direkt aus deinen Kontakten) und planst pro Person Erinnerungen, damit Beziehungen im Alltag nicht untergehen: Blumen für die Partnerin, ein Anruf beim Grossvater oder endlich das Treffen mit dem Studienkollegen.
 
 | | |
 |---|---|
@@ -36,12 +36,13 @@ closer/
 ├── Closer/                     # App-Target (Xcode-synchronisierter Ordner)
 │   ├── App/                    # Einstiegspunkt (@main) und Root-Navigation
 │   ├── Core/
-│   │   └── Models/             # Domänenmodelle, UI-unabhängig
-│   ├── DesignSystem/           # Farben, Typografie, wiederverwendbare Styles
+│   │   ├── Models/             # Domänenmodelle (Person, Relationship, Reminder), UI-unabhängig
+│   │   └── Services/           # Persistenz, Benachrichtigungen, Kontakt-Import
+│   ├── DesignSystem/           # Farben, Typografie, wiederverwendbare Komponenten
 │   ├── Features/               # Ein Ordner pro Feature (View + ViewModel)
 │   │   ├── Home/
 │   │   │   └── Components/     # Feature-spezifische Unter-Views
-│   │   └── Reminders/
+│   │   └── People/
 │   │       └── Components/
 │   └── Resources/              # Asset-Kataloge, Lokalisierung
 ├── CloserTests/                # Unit-Tests (Swift Testing), spiegelt die App-Struktur
@@ -56,7 +57,10 @@ Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien 
 ### Architektur
 
 - **MVVM** mit SwiftUI und `@Observable`-ViewModels.
-- ViewModels werden per `.environment(_:)` injiziert. Abhängigkeiten wie `UserDefaults` kommen über den Initializer, damit sie in Tests ersetzt werden können.
+- ViewModels werden per `.environment(_:)` injiziert. Abhängigkeiten wie `PeopleStore`, `NotificationScheduling` oder `UserDefaults` kommen über den Initializer, damit sie in Tests ersetzt werden können.
+- Personen samt Erinnerungen und Fotos liegen als JSON in *Application Support* (`people.json`).
+- Kontakte werden über `CNContactPickerViewController` gewählt. Der Picker läuft ausserhalb der App, deshalb braucht Closer weder die Kontakte-Berechtigung noch `NSContactsUsageDescription`.
+- Erinnerungen sind lokale Benachrichtigungen (`UNCalendarNotificationTrigger`), eine pro Erinnerung. iOS erlaubt maximal 64 geplante Benachrichtigungen pro App.
 - Neue Features bekommen einen eigenen Ordner unter `Features/`. Geteilte Modelle gehören nach `Core/`, geteilte UI-Bausteine nach `DesignSystem/`.
 
 ## Versionierung & Releases
