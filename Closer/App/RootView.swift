@@ -17,7 +17,7 @@ struct RootView: View {
                     Label("Personen", systemImage: "person.2.fill")
                 }
         }
-        .tint(.rosePrimary)
+        .tint(.closerAccent)
         .alert("Benachrichtigungen deaktiviert", isPresented: $vm.showPermissionAlert) {
             Button("Einstellungen öffnen") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {

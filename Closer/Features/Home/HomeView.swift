@@ -67,7 +67,7 @@ struct HomeView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.closerBackground.ignoresSafeArea())
             .navigationBarHidden(true)
             .sheet(isPresented: $showingAddPerson) {
                 PersonFormView()
@@ -97,17 +97,14 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 10) {
                 PersonAvatarView(person: next.person, size: 32)
-                    .overlay(Circle().strokeBorder(.white.opacity(0.6), lineWidth: 1))
                 Text("Als Nächstes für \(next.person.name)")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.white.opacity(0.85))
+                    .foregroundStyle(.closerHeroAccent)
                     .textCase(.uppercase)
                     .kerning(0.6)
                     .lineLimit(1)
                 Spacer()
-                Image(systemName: "bell.fill")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.75))
+                CloserMarkView(height: 18)
             }
 
             VStack(alignment: .leading, spacing: 8) {
@@ -115,7 +112,7 @@ struct HomeView: View {
                     .font(.system(size: 54))
                 Text(next.reminder.title)
                     .font(.title2.weight(.bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.closerOnHero)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -125,31 +122,24 @@ struct HomeView: View {
                 Text(next.date, format: .relative(presentation: .named))
                     .font(.caption)
             }
-            .foregroundStyle(.white.opacity(0.75))
+            .foregroundStyle(.closerOnHero.opacity(0.7))
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [.rosePrimary, .roseDeep],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background(Color.closerHero)
         .clipShape(RoundedRectangle(cornerRadius: 24))
-        .shadow(color: .rosePrimary.opacity(0.30), radius: 18, x: 0, y: 8)
     }
 
     private var emptyCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("👋")
-                .font(.system(size: 48))
+            CloserMarkView(height: 40)
+                .padding(.bottom, 4)
             Text(viewModel.people.isEmpty ? "Wer ist dir wichtig?" : "Keine anstehenden Erinnerungen")
                 .font(.title2.weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(.closerOnHero)
             Text("Füge eine Person hinzu und lass dich daran erinnern, dich zu melden.")
                 .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.85))
+                .foregroundStyle(.closerOnHero.opacity(0.8))
             Button {
                 showingAddPerson = true
             } label: {
@@ -157,20 +147,14 @@ struct HomeView: View {
                     .font(.subheadline.weight(.semibold))
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .background(Capsule().fill(.white))
-                    .foregroundStyle(Color.roseDeep)
+                    .background(Capsule().fill(Color.closerHeroAccent))
+                    .foregroundStyle(Color.closerOnAvatar)
             }
             .buttonStyle(.plain)
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [.rosePrimary, .roseDeep],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background(Color.closerHero)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
@@ -200,7 +184,7 @@ struct HomeView: View {
                     .padding(.horizontal, 16)
                 }
             }
-            .background(Color(.secondarySystemGroupedBackground))
+            .background(Color.closerSurface)
             .clipShape(RoundedRectangle(cornerRadius: 20))
         }
     }
@@ -211,13 +195,13 @@ struct HomeView: View {
                 value: "\(viewModel.people.count)",
                 label: viewModel.people.count == 1 ? "Person" : "Personen",
                 systemImage: "person.2.fill",
-                color: .purple
+                color: .closerSage
             )
             StatCard(
                 value: "\(viewModel.activeReminderCount)",
                 label: viewModel.activeReminderCount == 1 ? "Aktive Erinnerung" : "Aktive Erinnerungen",
                 systemImage: "bell.fill",
-                color: .rosePrimary
+                color: .closerAccent
             )
         }
     }
@@ -226,7 +210,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 12) {
             Image(systemName: "text.quote")
                 .font(.title3)
-                .foregroundStyle(.rosePrimary.opacity(0.5))
+                .foregroundStyle(.closerAccent.opacity(0.6))
 
             Text(dailyQuote.text)
                 .font(.body.italic())
@@ -239,7 +223,7 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(20)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.closerSurface)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }

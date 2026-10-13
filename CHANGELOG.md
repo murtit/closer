@@ -17,14 +17,19 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - UI-Test-Target `CloserUITests`: Screenshot-Tests gehen die Hauptscreens (Heute, Personen, Person hinzufügen, Person, Erinnerung) im Light und Dark Mode durch.
 - Startargument `-demo-data` (nur Debug) startet die App mit festen Beispielpersonen in einem temporären Speicher, ohne echte Daten oder Benachrichtigungen anzufassen. `-demo-appearance light|dark` erzwingt das Erscheinungsbild.
 - CI erstellt bei jedem Pull Request Screenshots im Simulator, lädt sie als Artefakt *Screenshots* hoch und zeigt sie in einem automatisch aktualisierten PR-Kommentar.
+- Neues App-Icon: zwei leicht überlappende Kreise in Korallorange (`#F5A58C`) und Creme-Rosé (`#F8F3E9`) auf tiefem Tannengrün (`#10231F`), inklusive Dark- und Tinted-Variante. Quelle als SVG unter `design/app-icon/`, erzeugt mit `scripts/generate-app-icon.py`; die CI prüft, dass die PNGs zur Vorlage passen.
+- Design-System mit semantischen Farb-Tokens (`Palette`, `Color+Theme`), je mit Light- und Dark-Variante, plus `CloserMarkView` (Bildmarke des Icons). Tests prüfen Markenfarben und WCAG-Kontrast (≥ 4.5:1) aller Text/Hintergrund-Paare in beiden Modi.
 
 ### Changed
+- App-Design auf die Farben des Icons umgestellt: Creme-Hintergrund im Light Mode, Tannengrün im Dark Mode, Akzentfarbe Terrakotta bzw. Koralle. Die Hervorhebungskarte auf „Heute“ ist tannengrün mit Bildmarke statt Rosa-Verlauf, Avatare ohne Foto zeigen Initialen auf Koralle. Listen und Formulare nutzen die neuen Hintergründe.
+- Die globale `AccentColor` entspricht der neuen Akzentfarbe (Light/Dark).
 - Der Tab „Erinnerungen“ ist durch „Personen“ ersetzt; Erinnerungen gehören jetzt immer zu einer Person.
 - Daten werden als JSON-Datei in *Application Support* gespeichert statt in `UserDefaults`.
 - Benachrichtigungen zeigen den Namen der Person als Titel und werden beim App-Start mit den gespeicherten Daten abgeglichen.
 - Emoji-Auswahl nach `DesignSystem/Components` verschoben und um Freundschafts- und Alltags-Emojis ergänzt.
 
 ### Removed
+- Rosa Farbschema (`rosePrimary`, `roseDeep`, `roseBlush`) zugunsten der neuen Palette.
 - Globale „Liebesgesten“ aus 0.1.0. Bestehende Einträge können keiner Person zugeordnet werden; ihre geplanten Benachrichtigungen werden beim ersten Start entfernt.
 
 ## [0.1.0] - 2026-10-13

@@ -28,6 +28,7 @@ struct PersonDetailView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .closerListBackground()
         .navigationTitle(person.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -103,6 +104,7 @@ struct PersonDetailView: View {
                 Text("Noch keine Erinnerungen. Nimm einen Vorschlag oder erstelle eine eigene.")
             }
         }
+        .listRowBackground(Color.closerSurface)
     }
 
     private func suggestionsSection(for person: Person) -> some View {
@@ -125,6 +127,7 @@ struct PersonDetailView: View {
         } header: {
             Text("Vorschläge für \(person.relationship.title)")
         }
+        .listRowBackground(Color.closerSurface)
     }
 }
 

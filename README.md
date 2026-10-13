@@ -45,7 +45,7 @@ closer/
 │   │   ├── Demo/               # Beispieldaten für UI-Tests und Screenshots (nur Debug)
 │   │   ├── Models/             # Domänenmodelle (Person, Relationship, Reminder), UI-unabhängig
 │   │   └── Services/           # Persistenz, Benachrichtigungen, Kontakt-Import
-│   ├── DesignSystem/           # Farben, Typografie, wiederverwendbare Komponenten
+│   ├── DesignSystem/           # Farb-Palette (Light/Dark), wiederverwendbare Komponenten
 │   ├── Features/               # Ein Ordner pro Feature (View + ViewModel)
 │   │   ├── Home/
 │   │   │   └── Components/     # Feature-spezifische Unter-Views
@@ -55,6 +55,7 @@ closer/
 ├── CloserTests/                # Unit-Tests (Swift Testing), spiegelt die App-Struktur
 ├── CloserUITests/              # UI- und Screenshot-Tests (XCTest)
 ├── Closer.xcodeproj/           # Xcode-Projekt inkl. geteiltem Scheme
+├── design/app-icon/            # App-Icon als SVG (generiert, nicht von Hand bearbeiten)
 ├── docs/                       # Entwickler-Dokumentation (Releases, Konventionen)
 ├── scripts/                    # Hilfsskripte (z. B. Versionierung)
 └── .github/                    # CI, PR- und Issue-Vorlagen, CODEOWNERS
@@ -70,6 +71,17 @@ Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien 
 - Kontakte werden über `CNContactPickerViewController` gewählt. Der Picker läuft ausserhalb der App, deshalb braucht Closer weder die Kontakte-Berechtigung noch `NSContactsUsageDescription`.
 - Erinnerungen sind lokale Benachrichtigungen (`UNCalendarNotificationTrigger`), eine pro Erinnerung. iOS erlaubt maximal 64 geplante Benachrichtigungen pro App.
 - Neue Features bekommen einen eigenen Ordner unter `Features/`. Geteilte Modelle gehören nach `Core/`, geteilte UI-Bausteine nach `DesignSystem/`.
+
+### Design & App-Icon
+
+Die Farben stammen aus dem App-Icon: Tannengrün `#10231F`, Koralle `#F5A58C` und Creme-Rosé `#F8F3E9`. `Closer/DesignSystem/Palette.swift` leitet daraus semantische Tokens mit je einer Light- und Dark-Variante ab (`background`, `surface`, `accent`, …). Views verwenden nur diese Tokens (`Color.closerAccent`, `.closerSurface`, …), nie feste Farbwerte, damit beide Modi stimmig bleiben. `PaletteTests` prüft den Kontrast jedes Text/Hintergrund-Paars nach WCAG AA.
+
+Das Icon wird aus seiner Geometrie erzeugt, nicht von Hand gezeichnet:
+
+```bash
+scripts/generate-app-icon.py          # SVGs in design/app-icon/ und PNGs im Asset-Katalog neu erzeugen
+scripts/generate-app-icon.py --check  # prüft, ob die eingecheckten Dateien aktuell sind (läuft in der CI)
+```
 
 ## Versionierung & Releases
 

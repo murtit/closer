@@ -30,7 +30,7 @@ struct EmojiPickerView: View {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 12)
                                     .fill(selectedEmoji == emoji
-                                          ? Color.rosePrimary.opacity(0.18)
+                                          ? Color.closerAccentSoft
                                           : Color.clear)
                                 Text(emoji)
                                     .font(.system(size: 32))
@@ -43,6 +43,7 @@ struct EmojiPickerView: View {
                 }
                 .padding()
             }
+            .background(Color.closerBackground.ignoresSafeArea())
             .navigationTitle("Emoji wählen")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
