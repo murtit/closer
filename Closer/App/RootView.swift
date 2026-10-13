@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct ContentView: View {
+/// Root tab navigation of the app.
+struct RootView: View {
     var body: some View {
         TabView {
             HomeView()
@@ -15,4 +16,9 @@ struct ContentView: View {
         }
         .tint(.rosePrimary)
     }
+}
+
+#Preview {
+    RootView()
+        .environment(RemindersViewModel())
 }
