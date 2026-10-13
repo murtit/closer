@@ -74,7 +74,7 @@ Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien 
 
 ### Design & App-Icon
 
-Die Farben stammen aus dem App-Icon: Tannengrün `#10231F`, Koralle `#F5A58C` und Creme-Rosé `#F8F3E9`. `Closer/DesignSystem/Palette.swift` leitet daraus semantische Tokens mit je einer Light- und Dark-Variante ab (`background`, `surface`, `accent`, …). Views verwenden nur diese Tokens (`Color.closerAccent`, `.closerSurface`, …), nie feste Farbwerte, damit beide Modi stimmig bleiben. `PaletteTests` prüft den Kontrast jedes Text/Hintergrund-Paars nach WCAG AA.
+Die Farben stammen aus dem App-Icon: Tannengrün `#10231F`, Koralle `#F5A58C` und Creme-Rosé `#F8F3E9`. `Closer/DesignSystem/Palette.swift` leitet daraus semantische Tokens mit je einer Light- und Dark-Variante ab (`background`, `surface`, `accent`, …). Im Dark Mode sind Flächen neutral fast schwarz, Tannengrün ist dort nur Akzent. Hell, Dunkel oder „Wie iPhone“ wählt man in der App unter *Einstellungen* (`AppearancePreference`, gespeichert in `UserDefaults`). Views verwenden nur diese Tokens (`Color.closerAccent`, `.closerSurface`, …), nie feste Farbwerte, damit beide Modi stimmig bleiben. `PaletteTests` prüft den Kontrast jedes Text/Hintergrund-Paars nach WCAG AA.
 
 Das Icon wird aus seiner Geometrie erzeugt, nicht von Hand gezeichnet:
 
