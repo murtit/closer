@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @Environment(PeopleViewModel.self) private var viewModel
     @State private var showingAddPerson = false
+    @State private var showingSettings = false
 
     // MARK: - Computed helpers
 
@@ -72,12 +73,32 @@ struct HomeView: View {
             .sheet(isPresented: $showingAddPerson) {
                 PersonFormView()
             }
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
+            }
         }
     }
 
     // MARK: - Sub-views
 
     private var headerView: some View {
+        HStack(alignment: .top) {
+            greetingView
+            Spacer()
+            Button {
+                showingSettings = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.title3)
+                    .foregroundStyle(.closerAccent)
+                    .frame(width: 44, height: 44)
+            }
+            .accessibilityLabel("Einstellungen")
+            .padding(.top, 8)
+        }
+    }
+
+    private var greetingView: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(greeting)
                 .font(.callout)
