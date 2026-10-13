@@ -82,20 +82,22 @@ struct HomeView: View {
     // MARK: - Sub-views
 
     private var headerView: some View {
-        HStack(alignment: .top) {
-            greetingView
-            Spacer()
-            Button {
-                showingSettings = true
-            } label: {
-                Image(systemName: "gearshape")
-                    .font(.title3)
-                    .foregroundStyle(.closerAccent)
-                    .frame(width: 44, height: 44)
+        // Overlay instead of an HStack so the title keeps the full width and stays on one line;
+        // the gear sits next to the short greeting above it.
+        greetingView
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .overlay(alignment: .topTrailing) {
+                Button {
+                    showingSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(.title3)
+                        .foregroundStyle(.closerAccent)
+                        .frame(width: 44, height: 36)
+                }
+                .accessibilityLabel("Einstellungen")
+                .padding(.top, 4)
             }
-            .accessibilityLabel("Einstellungen")
-            .padding(.top, 8)
-        }
     }
 
     private var greetingView: some View {
