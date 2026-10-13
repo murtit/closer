@@ -9,7 +9,7 @@ struct RelationshipTests {
     @Test func everyRelationshipOffersSuggestionsWithAtLeastOnePreselected() {
         for relationship in all {
             #expect(!relationship.suggestions.isEmpty, "\(relationship.title)")
-            #expect(relationship.suggestions.contains(where: \.isPreselected), "\(relationship.title)")
+            #expect(relationship.suggestions.contains { $0.isPreselected }, "\(relationship.title)")
         }
     }
 
