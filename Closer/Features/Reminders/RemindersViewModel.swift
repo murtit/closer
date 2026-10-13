@@ -8,16 +8,20 @@ final class RemindersViewModel {
     var reminders: [Reminder] = []
     var showPermissionAlert = false
 
-    private let storageKey = "reminders_v1"
+    /// Storage key is intentionally unchanged from the pre-rename app to keep the persisted format stable.
+    static let storageKey = "reminders_v1"
 
-    init() {
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
         load()
     }
 
     // MARK: - Persistence
 
     private func load() {
-        if let data = UserDefaults.standard.data(forKey: storageKey),
+        if let data = defaults.data(forKey: Self.storageKey),
            let decoded = try? JSONDecoder().decode([Reminder].self, from: data) {
             reminders = decoded
         } else {
@@ -28,7 +32,7 @@ final class RemindersViewModel {
 
     private func persist() {
         guard let data = try? JSONEncoder().encode(reminders) else { return }
-        UserDefaults.standard.set(data, forKey: storageKey)
+        defaults.set(data, forKey: Self.storageKey)
     }
 
     // MARK: - CRUD
