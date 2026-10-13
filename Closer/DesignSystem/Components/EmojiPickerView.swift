@@ -12,6 +12,8 @@ struct EmojiPickerView: View {
         "🎁", "🎀", "🎊", "🎉", "🍫", "🍷", "🫖", "☕",
         "📸", "🎵", "🎶", "🔥", "💎", "🦋", "🐝",
         "💐", "🫶", "👫", "💏", "💑",
+        "📞", "💬", "👋", "🤝", "🍻", "🍕", "🎂", "⚽", "🎮", "🏃",
+        "🏡", "🤲", "✉️", "🗓️", "🎬", "🏔️", "🚗", "✈️",
     ]
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 7)
