@@ -1,55 +1,30 @@
 import Foundation
 
-struct Reminder: Identifiable, Codable, Equatable {
+/// A recurring (or one-off) nudge to do something for a specific person.
+struct Reminder: Identifiable, Codable, Equatable, Hashable {
     var id: UUID
     var title: String
     var emoji: String
     var isEnabled: Bool
-    var time: Date
-    var isCustom: Bool
+    var schedule: ReminderSchedule
 
     init(
         id: UUID = UUID(),
         title: String,
         emoji: String,
-        isEnabled: Bool = false,
-        time: Date = Self.noon(),
-        isCustom: Bool = false
+        isEnabled: Bool = true,
+        schedule: ReminderSchedule = ReminderSchedule()
     ) {
         self.id = id
         self.title = title
         self.emoji = emoji
         self.isEnabled = isEnabled
-        self.time = time
-        self.isCustom = isCustom
+        self.schedule = schedule
     }
 
-    // MARK: - Predefined gestures
-
-    static let predefined: [Reminder] = [
-        Reminder(title: "Ein Kompliment machen",
-                 emoji: "💬", time: hour(9)),
-        Reminder(title: "Blumen kaufen",
-                 emoji: "🌸", time: hour(10)),
-        Reminder(title: "Ein altes gemeinsames Foto schicken",
-                 emoji: "📸", time: hour(11)),
-        Reminder(title: "Ich musste gerade an dich denken",
-                 emoji: "💭", time: hour(12)),
-        Reminder(title: "Sagen, warum du sie liebst",
-                 emoji: "❤️", time: hour(14)),
-        Reminder(title: "Eine liebe Nachricht senden",
-                 emoji: "💌", time: hour(16)),
-        Reminder(title: "Gemeinsam etwas unternehmen",
-                 emoji: "✨", time: hour(18)),
-    ]
-
-    // MARK: - Helpers
-
-    private static func hour(_ h: Int) -> Date {
-        Calendar.current.date(bySettingHour: h, minute: 0, second: 0, of: Date()) ?? Date()
-    }
-
-    private static func noon() -> Date {
-        Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: Date()) ?? Date()
+    /// Next time this reminder fires, or `nil` if it is disabled or a one-off in the past.
+    func nextOccurrence(after date: Date = Date(), calendar: Calendar = .current) -> Date? {
+        guard isEnabled else { return nil }
+        return schedule.nextOccurrence(after: date, calendar: calendar)
     }
 }

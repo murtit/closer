@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Environment(RemindersViewModel.self) var viewModel
+    @Environment(PeopleViewModel.self) private var viewModel
+    @State private var showingAddPerson = false
 
     // MARK: - Computed helpers
 
@@ -23,6 +24,8 @@ struct HomeView: View {
         ("Wer liebt, findet immer Zeit.", "Unbekannt"),
         ("Liebe ist keine Leistung – sie ist ein Geschenk.", "Unbekannt"),
         ("Große Liebe zeigt sich in kleinen Gesten.", "Unbekannt"),
+        ("Freundschaft ist eine Seele in zwei Körpern.", "Aristoteles"),
+        ("Ein Anruf kostet wenig und bedeutet viel.", "Unbekannt"),
         ("Das Schönste, was du tragen kannst, ist ein Lächeln.", "Audrey Hepburn"),
         ("Lieben heißt, das andere Gesicht anzuschauen.", "Marcel Proust"),
         ("Wahre Liebe beginnt, wenn nichts erwartet wird.", "Antoine de Saint-Exupéry"),
@@ -33,9 +36,8 @@ struct HomeView: View {
         return Self.quotes[day % Self.quotes.count]
     }
 
-    private var featuredReminder: Reminder? {
-        let active = viewModel.reminders.filter { $0.isEnabled }
-        return active.randomElement() ?? viewModel.reminders.first
+    private var upcoming: [PeopleViewModel.Upcoming] {
+        viewModel.upcoming(limit: 4)
     }
 
     // MARK: - Body
@@ -46,8 +48,14 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     headerView
 
-                    if let reminder = featuredReminder {
-                        featuredCard(for: reminder)
+                    if let next = upcoming.first {
+                        featuredCard(for: next)
+                    } else {
+                        emptyCard
+                    }
+
+                    if upcoming.count > 1 {
+                        upcomingList
                     }
 
                     statsRow
@@ -61,6 +69,9 @@ struct HomeView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationBarHidden(true)
+            .sheet(isPresented: $showingAddPerson) {
+                PersonFormView()
+            }
         }
     }
 
@@ -71,7 +82,7 @@ struct HomeView: View {
             Text(greeting)
                 .font(.callout)
                 .foregroundStyle(.secondary)
-            Text("Wie liebst du heute?")
+            Text("Wem bist du heute nah?")
                 .font(.system(size: 30, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
             Text(dateString.capitalized)
@@ -82,40 +93,39 @@ struct HomeView: View {
         .padding(.top, 16)
     }
 
-    private func featuredCard(for reminder: Reminder) -> some View {
+    private func featuredCard(for next: PeopleViewModel.Upcoming) -> some View {
         VStack(alignment: .leading, spacing: 20) {
-            HStack {
-                Text("Inspiration für heute")
+            HStack(spacing: 10) {
+                PersonAvatarView(person: next.person, size: 32)
+                    .overlay(Circle().strokeBorder(.white.opacity(0.6), lineWidth: 1))
+                Text("Als Nächstes für \(next.person.name)")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.white.opacity(0.75))
+                    .foregroundStyle(.white.opacity(0.85))
                     .textCase(.uppercase)
                     .kerning(0.6)
+                    .lineLimit(1)
                 Spacer()
-                if reminder.isEnabled {
-                    Image(systemName: "bell.fill")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.75))
-                }
+                Image(systemName: "bell.fill")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.75))
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(reminder.emoji)
+                Text(next.reminder.emoji)
                     .font(.system(size: 54))
-                Text(reminder.title)
+                Text(next.reminder.title)
                     .font(.title2.weight(.bold))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            if reminder.isEnabled {
-                HStack(spacing: 6) {
-                    Image(systemName: "clock")
-                        .font(.caption)
-                    Text("Täglich um \(reminder.time, format: .dateTime.hour().minute())")
-                        .font(.caption)
-                }
-                .foregroundStyle(.white.opacity(0.7))
+            HStack(spacing: 6) {
+                Image(systemName: "clock")
+                    .font(.caption)
+                Text(next.date, format: .relative(presentation: .named))
+                    .font(.caption)
             }
+            .foregroundStyle(.white.opacity(0.75))
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -130,19 +140,84 @@ struct HomeView: View {
         .shadow(color: .rosePrimary.opacity(0.30), radius: 18, x: 0, y: 8)
     }
 
+    private var emptyCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("👋")
+                .font(.system(size: 48))
+            Text(viewModel.people.isEmpty ? "Wer ist dir wichtig?" : "Keine anstehenden Erinnerungen")
+                .font(.title2.weight(.bold))
+                .foregroundStyle(.white)
+            Text("Füge eine Person hinzu und lass dich daran erinnern, dich zu melden.")
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.85))
+            Button {
+                showingAddPerson = true
+            } label: {
+                Label("Person hinzufügen", systemImage: "plus")
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Capsule().fill(.white))
+                    .foregroundStyle(Color.roseDeep)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            LinearGradient(
+                colors: [.rosePrimary, .roseDeep],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+
+    private var upcomingList: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Danach")
+                .font(.headline)
+
+            VStack(spacing: 0) {
+                ForEach(upcoming.dropFirst()) { item in
+                    HStack(spacing: 12) {
+                        PersonAvatarView(person: item.person, size: 36)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("\(item.reminder.emoji) \(item.reminder.title)")
+                                .font(.subheadline)
+                                .lineLimit(1)
+                            Text(item.person.name)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Text(item.date, format: .relative(presentation: .named))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 16)
+                }
+            }
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+        }
+    }
+
     private var statsRow: some View {
         HStack(spacing: 14) {
             StatCard(
-                value: "\(viewModel.activeCount)",
-                label: viewModel.activeCount == 1 ? "Aktive Erinnerung" : "Aktive Erinnerungen",
-                systemImage: "bell.fill",
-                color: .rosePrimary
+                value: "\(viewModel.people.count)",
+                label: viewModel.people.count == 1 ? "Person" : "Personen",
+                systemImage: "person.2.fill",
+                color: .purple
             )
             StatCard(
-                value: "\(viewModel.totalCount)",
-                label: viewModel.totalCount == 1 ? "Liebesgeste" : "Liebesgesten",
-                systemImage: "heart.fill",
-                color: .purple
+                value: "\(viewModel.activeReminderCount)",
+                label: viewModel.activeReminderCount == 1 ? "Aktive Erinnerung" : "Aktive Erinnerungen",
+                systemImage: "bell.fill",
+                color: .rosePrimary
             )
         }
     }
@@ -171,5 +246,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .environment(RemindersViewModel())
+        .environment(PeopleViewModel())
 }
