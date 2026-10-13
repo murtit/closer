@@ -23,9 +23,25 @@ struct PaletteTests {
 
     // MARK: - Light and dark mode
 
-    @Test func backgroundIsCreamByDayAndPineByNight() {
+    @Test func backgroundIsCreamByDay() {
         #expect(Palette.background.resolved(for: .light) == Palette.cream)
-        #expect(Palette.background.resolved(for: .dark) == Palette.pine)
+    }
+
+    /// Pine is an accent at night (hero card, sage), not the colour of whole screens.
+    @Test func darkSurfacesAreNeutralNotGreen() {
+        for token in [Palette.background, Palette.surface] {
+            let color = token.resolved(for: .dark)
+            #expect(color != Palette.pine)
+            #expect(color.green <= color.red, "\(String(color.hex, radix: 16))")
+            #expect(max(color.red, color.green, color.blue) - min(color.red, color.green, color.blue) <= 0.02)
+        }
+    }
+
+    @Test func heroStaysPineInBothModes() {
+        #expect(Palette.hero.resolved(for: .light) == Palette.pine)
+        let dark = Palette.hero.resolved(for: .dark)
+        #expect(dark.green > dark.red && dark.green > dark.blue)
+        #expect(dark.contrastRatio(to: Palette.background.resolved(for: .dark)) > 1.2)
     }
 
     @Test func surfacesFollowTheAppearance() {

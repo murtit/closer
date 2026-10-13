@@ -19,13 +19,14 @@ nonisolated enum Palette {
 
     // MARK: - Surfaces
 
-    /// Screen background: cream by day, pine by night.
-    static let background = ThemeColor(Palette.cream, dark: Palette.pine)
+    /// Screen background: cream by day, a warm, neutral near-black by night. Pine is kept for
+    /// accents in dark mode, as a whole background it dominated the screen.
+    static let background = ThemeColor(Palette.cream, dark: RGBColor(hex: 0x121110))
     /// Cards and list rows on top of `background`.
-    static let surface = ThemeColor(light: 0xFFFDF9, dark: 0x1A332D)
+    static let surface = ThemeColor(light: 0xFFFDF9, dark: 0x1E1C1B)
     /// The highlighted card on the home screen; pine in both modes, a shade lighter at night so
-    /// it stands out from the background.
-    static let hero = ThemeColor(Palette.pine, dark: RGBColor(hex: 0x21423A))
+    /// it stands out from the near-black background.
+    static let hero = ThemeColor(Palette.pine, dark: RGBColor(hex: 0x1A3630))
 
     // MARK: - Content
 
@@ -35,7 +36,7 @@ nonisolated enum Palette {
     /// Text and icons on a filled `accent` background, such as prominent buttons.
     static let onAccent = ThemeColor(light: 0xFFFFFF, dark: 0x10231F)
     /// Soft fill behind emojis, chips and quick actions.
-    static let accentSoft = ThemeColor(light: 0xFBE4DA, dark: 0x4A3630)
+    static let accentSoft = ThemeColor(light: 0xFBE4DA, dark: 0x3B2A25)
     /// Text and icons on `accentSoft`.
     static let onAccentSoft = ThemeColor(light: 0x8A3A25, dark: 0xF8C4B2)
     /// Text on `hero`.
