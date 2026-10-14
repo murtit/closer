@@ -112,6 +112,8 @@ struct ReminderFormView: View {
                         Text("\(day).").tag(day)
                     }
                 }
+            case .yearly:
+                DatePicker("Datum", selection: $schedule.date, displayedComponents: .date)
             }
 
             DatePicker("Uhrzeit", selection: timeBinding, displayedComponents: .hourAndMinute)
