@@ -208,6 +208,108 @@ struct PeopleViewModelTests {
         #expect(upcoming.first?.date == TestCalendar.date(2026, 10, 12, 18))
     }
 
+    // MARK: - Partner
+
+    @Test func onlyOnePartnerCanBeAdded() {
+        let viewModel = makeViewModel()
+        let sara = Person(name: "Sara", relationship: .partner)
+        #expect(viewModel.canBePartner(nil))
+        #expect(viewModel.add(sara))
+
+        #expect(!viewModel.canBePartner(nil))
+        #expect(viewModel.canBePartner(sara.id))
+        #expect(!viewModel.add(Person(name: "Lea", relationship: .partner)))
+        #expect(viewModel.people.map(\.name) == ["Sara"])
+        #expect(viewModel.partner?.id == sara.id)
+    }
+
+    @Test func nobodyElseCanBecomeThePartner() {
+        let viewModel = makeViewModel()
+        viewModel.add(Person(name: "Sara", relationship: .partner))
+        var lukas = Person(name: "Lukas", relationship: .friend)
+        viewModel.add(lukas)
+
+        lukas.relationship = .partner
+        #expect(!viewModel.update(lukas))
+        #expect(viewModel.person(withID: lukas.id)?.relationship == .friend)
+    }
+
+    @Test func partnerCanBeEditedAndReplacedAfterwards() {
+        let viewModel = makeViewModel()
+        var sara = Person(name: "Sara", relationship: .partner)
+        viewModel.add(sara)
+
+        sara.name = "Sara Keller"
+        #expect(viewModel.update(sara))
+
+        sara.relationship = .friend
+        #expect(viewModel.update(sara))
+        #expect(viewModel.partner == nil)
+        #expect(viewModel.add(Person(name: "Lea", relationship: .partner)))
+    }
+
+    @Test func settingTheAnniversarySchedulesItsReminders() async {
+        let viewModel = makeViewModel()
+        let sara = Person(name: "Sara", relationship: .partner)
+        viewModel.add(sara)
+
+        let anniversary = Anniversary(date: TestCalendar.date(2021, 2, 14))
+        viewModel.setAnniversary(anniversary, for: sara.id)
+        await viewModel.pendingNotificationWork?.value
+
+        #expect(makeViewModel().partner?.anniversary == anniversary)
+        #expect(Set(notifications.pending.keys) == Set(anniversary.reminderIDs))
+        #expect(notifications.pending[anniversary.reminderID]?.schedule.frequency == .yearly)
+    }
+
+    @Test func removingAHeadsUpCancelsItsNotification() async {
+        let viewModel = makeViewModel()
+        var anniversary = Anniversary(date: TestCalendar.date(2021, 2, 14))
+        let sara = Person(name: "Sara", relationship: .partner, anniversary: anniversary)
+        viewModel.add(sara)
+        let threeDays = anniversary.headsUps[1].id
+
+        anniversary.setHeadsUp(3, enabled: false)
+        viewModel.setAnniversary(anniversary, for: sara.id)
+        await viewModel.pendingNotificationWork?.value
+
+        #expect(notifications.pending[threeDays] == nil)
+        #expect(notifications.cancelledIDs.contains(threeDays))
+        #expect(notifications.pending.count == 2)
+    }
+
+    @Test func removingTheAnniversaryOrThePartnerCancelsEverything() async {
+        let viewModel = makeViewModel()
+        let anniversary = Anniversary(date: TestCalendar.date(2021, 2, 14))
+        let sara = Person(name: "Sara", relationship: .partner, anniversary: anniversary)
+        viewModel.add(sara)
+
+        viewModel.setAnniversary(nil, for: sara.id)
+        await viewModel.pendingNotificationWork?.value
+        #expect(notifications.pending.isEmpty)
+
+        viewModel.setAnniversary(anniversary, for: sara.id)
+        viewModel.delete(sara)
+        await viewModel.pendingNotificationWork?.value
+        #expect(notifications.pending.isEmpty)
+    }
+
+    @Test func onlyThePartnerCanHaveAnAnniversary() {
+        let viewModel = makeViewModel()
+        let opa = grandpa()
+        viewModel.add(opa)
+        viewModel.setAnniversary(Anniversary(date: TestCalendar.date(2021, 2, 14)), for: opa.id)
+        #expect(viewModel.person(withID: opa.id)?.anniversary == nil)
+    }
+
+    @Test func upcomingIncludesAnniversaryReminders() {
+        let viewModel = makeViewModel()
+        viewModel.add(Person(name: "Sara", relationship: .partner, anniversary: Anniversary(date: TestCalendar.date(2021, 10, 20))))
+
+        let upcoming = viewModel.upcoming(after: TestCalendar.date(2026, 10, 12, 10), calendar: TestCalendar.zurich)
+        #expect(upcoming.map(\.date) == [TestCalendar.date(2026, 10, 17, 9), TestCalendar.date(2026, 10, 20, 9), TestCalendar.date(2027, 10, 6, 9)])
+    }
+
     // MARK: - Notifications & migration
 
     @Test func syncReschedulesEverythingWhenAuthorized() async {
@@ -221,6 +323,18 @@ struct PeopleViewModelTests {
 
         #expect(notifications.cancelAllCount == 1)
         #expect(Set(notifications.pending.keys) == [person.reminders[0].id])
+    }
+
+    @Test func syncAlsoSchedulesTheAnniversary() async {
+        let viewModel = makeViewModel()
+        let anniversary = Anniversary(date: TestCalendar.date(2021, 2, 14))
+        viewModel.add(Person(name: "Sara", relationship: .partner, anniversary: anniversary))
+        await viewModel.pendingNotificationWork?.value
+
+        viewModel.syncNotifications()
+        await viewModel.pendingNotificationWork?.value
+
+        #expect(Set(notifications.pending.keys) == Set(anniversary.reminderIDs))
     }
 
     @Test func syncDoesNothingWithoutPermission() async {
