@@ -66,4 +66,46 @@ struct PersonTests {
         let data = try JSONEncoder().encode(original)
         #expect(try JSONDecoder().decode(Person.self, from: data) == original)
     }
+
+    // MARK: - Anniversary
+
+    @Test func anniversaryRemindersOnlyCountForThePartner() {
+        let anniversary = Anniversary(date: TestCalendar.date(2021, 2, 14))
+        let partner = Person(name: "Sara", relationship: .partner, anniversary: anniversary)
+        var friend = partner
+        friend.relationship = .friend
+
+        #expect(partner.allReminders(calendar: TestCalendar.zurich).count == 3)
+        #expect(partner.activeReminderCount == 3)
+        #expect(friend.allReminders(calendar: TestCalendar.zurich).isEmpty)
+        // Its notifications must still be cancellable after the relationship changed.
+        #expect(Set(friend.notificationIDs) == Set(anniversary.reminderIDs))
+    }
+
+    @Test func nextReminderIncludesTheAnniversary() {
+        let calendar = TestCalendar.zurich
+        let monday = TestCalendar.date(2026, 10, 12, 10)
+        let person = Person(
+            name: "Sara",
+            relationship: .partner,
+            reminders: [Reminder(title: "Blumen", emoji: "💐", schedule: .init(frequency: .monthly, hour: 17, dayOfMonth: 1))],
+            anniversary: Anniversary(date: TestCalendar.date(2021, 10, 20))
+        )
+        let next = person.nextReminder(after: monday, calendar: calendar)
+        #expect(next?.reminder.title == Anniversary.headsUpTitle(daysBefore: 3))
+        #expect(next?.date == TestCalendar.date(2026, 10, 17, 9))
+    }
+
+    @Test func personSavedWithoutAnniversaryStillDecodes() throws {
+        let json = #"{"id":"\#(UUID().uuidString)","name":"Sara","relationship":{"partner":{}},"reminders":[],"createdAt":0}"#
+        let person = try JSONDecoder().decode(Person.self, from: Data(json.utf8))
+        #expect(person.anniversary == nil)
+        #expect(person.isPartner)
+    }
+
+    @Test func codableRoundTripKeepsTheAnniversary() throws {
+        let original = Person(name: "Sara", relationship: .partner, anniversary: Anniversary(date: TestCalendar.date(2021, 2, 14)))
+        let data = try JSONEncoder().encode(original)
+        #expect(try JSONDecoder().decode(Person.self, from: data) == original)
+    }
 }

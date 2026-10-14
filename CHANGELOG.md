@@ -8,13 +8,18 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- **Partner:in im Fokus**: Auf „Heute“ steht ganz oben eine eigene, warme Karte für deine:n Partner:in mit Foto, „Seit … Tagen zusammen“, Countdown zum nächsten Jahrestag und einer Schaltfläche für eine liebe Nachricht. Ein Tipp öffnet die Person.
+- **Jahrestag**: Für die Partnerin bzw. den Partner lässt sich der Tag eintragen, an dem ihr zusammengekommen seid (beim Erfassen oder im Personen-Detail). Closer erinnert jedes Jahr am Tag selbst und standardmässig schon 2 Wochen („Zeit für ein Geschenk“) und 3 Tage vorher („Zeit, ein Date zu planen“). Vorlauf (1, 3, 7, 14 oder 30 Tage), Uhrzeit und Ein/Aus sind einstellbar. Jahrestags-Erinnerungen erscheinen auch bei den nächsten Erinnerungen.
+- Erinnerungen können jetzt auch **jährlich** wiederholt werden (z. B. für Geburtstage). Am 29. Februar fällt eine jährliche Erinnerung in anderen Jahren auf den 28.
+- Farb-Tokens `partner`, `partnerEnd`, `onPartner` und `partnerAccent` für die Partner-Karte, mit Kontrast-Tests.
+- Screenshot-Test für das Jahrestags-Formular.
 - **Personen**: Mehrere Personen mit Beziehung (Partner:in, Familie, Freunde oder eigene Bezeichnung) erfassen, bearbeiten und löschen.
 - Kontakt-Import über den System-Kontaktpicker: Name, Foto, Telefonnummer (Mobilnummer bevorzugt) und E-Mail werden übernommen, ohne dass Closer Zugriff auf alle Kontakte braucht.
 - Erinnerungen pro Person, einmalig, täglich, wöchentlich oder monatlich, mit Vorschlägen je Beziehung (z. B. „Blumen kaufen“ für Partner:in, „Anrufen und fragen, wie es geht“ für Familie, „Melden und etwas abmachen“ für Freunde).
 - Personen-Detail mit Schnellaktionen zum Anrufen, Schreiben und Mailen.
 - Startseite zeigt die nächsten anstehenden Erinnerungen über alle Personen.
 - Tests für Modelle, Persistenz, Kontakt-Import und `PeopleViewModel`.
-- UI-Test-Target `CloserUITests`: Screenshot-Tests gehen die Hauptscreens (Heute, Personen, Person hinzufügen, Person, Erinnerung, Einstellungen) im Light und Dark Mode durch.
+- UI-Test-Target `CloserUITests`: Screenshot-Tests gehen die Hauptscreens (Heute, Personen, Person hinzufügen, Person, Erinnerung, Jahrestag, Einstellungen) im Light und Dark Mode durch.
 - Startargument `-demo-data` (nur Debug) startet die App mit festen Beispielpersonen in einem temporären Speicher, ohne echte Daten oder Benachrichtigungen anzufassen. `-demo-appearance light|dark` erzwingt das Erscheinungsbild.
 - CI erstellt bei jedem Pull Request Screenshots im Simulator, lädt sie als Artefakt *Screenshots* hoch und zeigt sie in einem automatisch aktualisierten PR-Kommentar.
 - Neues App-Icon: zwei leicht überlappende Kreise in Korallorange (`#F5A58C`) und Creme-Rosé (`#F8F3E9`) auf tiefem Tannengrün (`#10231F`), inklusive Dark- und Tinted-Variante. Quelle als SVG unter `design/app-icon/`, erzeugt mit `scripts/generate-app-icon.py`; die CI prüft, dass die PNGs zur Vorlage passen.
@@ -22,6 +27,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Design-System mit semantischen Farb-Tokens (`Palette`, `Color+Theme`), je mit Light- und Dark-Variante, plus `CloserMarkView` (Bildmarke des Icons). Tests prüfen Markenfarben und WCAG-Kontrast (≥ 4.5:1) aller Text/Hintergrund-Paare in beiden Modi.
 
 ### Changed
+- Es gibt nur noch **eine:n Partner:in**: Ist bereits jemand als Partner:in erfasst, ist die Auswahl „Partner:in“ für weitere Personen deaktiviert, und neue Personen starten mit „Familie“. Bestehende Daten mit mehreren Partner:innen bleiben erhalten; als Partner:in auf „Heute“ gilt die zuerst erfasste Person.
 - App-Design auf die Farben des Icons umgestellt: Creme-Hintergrund im Light Mode, Tannengrün im Dark Mode, Akzentfarbe Terrakotta bzw. Koralle. Die Hervorhebungskarte auf „Heute“ ist tannengrün mit Bildmarke statt Rosa-Verlauf, Avatare ohne Foto zeigen Initialen auf Koralle. Listen und Formulare nutzen die neuen Hintergründe.
 - Dark Mode ruhiger: Hintergründe und Listen sind ein warmes, neutrales Fast-Schwarz statt Tannengrün. Tannengrün bleibt als Akzent (Hervorhebungskarte auf „Heute“), Koralle als Akzentfarbe.
 - Die globale `AccentColor` entspricht der neuen Akzentfarbe (Light/Dark).

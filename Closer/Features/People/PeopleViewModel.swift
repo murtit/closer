@@ -47,6 +47,17 @@ final class PeopleViewModel {
 
     var activeReminderCount: Int { people.reduce(0) { $0 + $1.activeReminderCount } }
 
+    /// There is only one partner. Should older data contain several, the one added first counts.
+    var partner: Person? {
+        people.filter(\.isPartner).min { $0.createdAt < $1.createdAt }
+    }
+
+    /// Whether the person with `id` (or a new person, for `nil`) may be the partner: only if
+    /// nobody else is.
+    func canBePartner(_ id: Person.ID?) -> Bool {
+        !people.contains { $0.isPartner && $0.id != id }
+    }
+
     struct Upcoming: Identifiable {
         var id: Reminder.ID { reminder.id }
         let person: Person
@@ -57,7 +68,7 @@ final class PeopleViewModel {
     /// All upcoming reminders across people, soonest first.
     func upcoming(after date: Date = Date(), limit: Int = 5, calendar: Calendar = .current) -> [Upcoming] {
         let all = people.flatMap { person in
-            person.reminders.compactMap { reminder in
+            person.allReminders(calendar: calendar).compactMap { reminder in
                 reminder.nextOccurrence(after: date, calendar: calendar)
                     .map { Upcoming(person: person, reminder: reminder, date: $0) }
             }
@@ -67,28 +78,39 @@ final class PeopleViewModel {
 
     // MARK: - People
 
-    func add(_ person: Person) {
+    /// Adds the person. Returns `false`, and adds nothing, for a second partner.
+    @discardableResult
+    func add(_ person: Person) -> Bool {
+        guard !person.isPartner || canBePartner(person.id) else { return false }
         people.append(person)
         persist()
-        guard person.reminders.contains(where: \.isEnabled) else { return }
+        let enabled = person.allReminders().filter(\.isEnabled)
+        guard !enabled.isEmpty else { return true }
         enqueue(requestingPermission: true) { scheduler in
-            for reminder in person.reminders where reminder.isEnabled {
+            for reminder in enabled {
                 await scheduler.schedule(reminder, for: person)
             }
         }
+        return true
     }
 
-    func update(_ person: Person) {
-        guard let index = people.firstIndex(where: { $0.id == person.id }) else { return }
-        let previousIDs = people[index].reminders.map(\.id)
+    /// Replaces the person with the same ID. Returns `false`, and changes nothing, when someone
+    /// would become a second partner.
+    @discardableResult
+    func update(_ person: Person) -> Bool {
+        guard let index = people.firstIndex(where: { $0.id == person.id }) else { return false }
+        let becomesPartner = person.isPartner && !people[index].isPartner
+        guard !becomesPartner || canBePartner(person.id) else { return false }
+        let previousIDs = people[index].notificationIDs
         people[index] = person
         persist()
         reschedule(person, cancelling: previousIDs)
+        return true
     }
 
     func delete(_ person: Person) {
         guard let index = people.firstIndex(where: { $0.id == person.id }) else { return }
-        let ids = people[index].reminders.map(\.id)
+        let ids = people[index].notificationIDs
         people.remove(at: index)
         persist()
         enqueue { $0.cancel(ids) }
@@ -120,17 +142,26 @@ final class PeopleViewModel {
         update(person)
     }
 
+    // MARK: - Anniversary
+
+    /// Sets, changes or (with `nil`) removes the partner's anniversary.
+    func setAnniversary(_ anniversary: Anniversary?, for personID: Person.ID) {
+        guard var person = person(withID: personID), person.isPartner else { return }
+        person.anniversary = anniversary
+        update(person)
+    }
+
     // MARK: - Notifications
 
     /// Rebuilds all pending notifications from the stored data. Called on launch so that the
     /// system state matches the app even after a restore or a failed schedule. Never prompts.
     func syncNotifications() {
-        let snapshot = people
+        let snapshot = people.map { (person: $0, reminders: $0.allReminders().filter(\.isEnabled)) }
         enqueue { scheduler in
             guard await scheduler.isAuthorized() else { return }
             scheduler.cancelAll()
-            for person in snapshot {
-                for reminder in person.reminders where reminder.isEnabled {
+            for (person, reminders) in snapshot {
+                for reminder in reminders {
                     await scheduler.schedule(reminder, for: person)
                 }
             }
@@ -139,7 +170,7 @@ final class PeopleViewModel {
 
     private func reschedule(_ person: Person, cancelling previousIDs: [UUID]) {
         enqueue { $0.cancel(previousIDs) }
-        let enabled = person.reminders.filter(\.isEnabled)
+        let enabled = person.allReminders().filter(\.isEnabled)
         guard !enabled.isEmpty else { return }
         enqueue(requestingPermission: true) { scheduler in
             for reminder in enabled {

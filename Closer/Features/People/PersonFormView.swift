@@ -16,6 +16,8 @@ struct PersonFormView: View {
     @State private var photoData: Data?
     @State private var contactIdentifier: String?
     @State private var selectedSuggestions: Set<String>
+    @State private var hasAnniversary: Bool
+    @State private var anniversaryDate: Date
     @State private var showingContactPicker = false
     @State private var confirmingDelete = false
 
@@ -31,9 +33,16 @@ struct PersonFormView: View {
         _photoData = State(initialValue: person?.photoData)
         _contactIdentifier = State(initialValue: person?.contactIdentifier)
         _selectedSuggestions = State(initialValue: Self.preselected(for: relationship))
+        _hasAnniversary = State(initialValue: person?.anniversary != nil)
+        _anniversaryDate = State(initialValue: person?.anniversary?.date ?? Date())
     }
 
     private var isAdding: Bool { original == nil }
+
+    /// Only one partner: the chip is off when someone else already is.
+    private var isPartnerAvailable: Bool {
+        viewModel.canBePartner(original?.id)
+    }
 
     private var trimmedName: String {
         name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -45,6 +54,9 @@ struct PersonFormView: View {
                 Group {
                     contactSection
                     relationshipSection
+                    if relationship == .partner {
+                        anniversarySection
+                    }
                     if isAdding {
                         suggestionsSection
                     }
@@ -70,6 +82,11 @@ struct PersonFormView: View {
             }
             .tint(.closerAccent)
             .contactPicker(isPresented: $showingContactPicker, onSelect: apply)
+            .onAppear {
+                if relationship == .partner && !isPartnerAvailable {
+                    relationship = .family
+                }
+            }
             .onChange(of: relationship.sortIndex) {
                 selectedSuggestions = Self.preselected(for: relationship)
             }
@@ -112,7 +129,20 @@ struct PersonFormView: View {
 
     private var relationshipSection: some View {
         Section("Beziehung") {
-            RelationshipPicker(relationship: $relationship)
+            RelationshipPicker(relationship: $relationship, isPartnerAvailable: isPartnerAvailable)
+        }
+    }
+
+    private var anniversarySection: some View {
+        Section {
+            Toggle("Jahrestag angeben", isOn: $hasAnniversary.animation())
+            if hasAnniversary {
+                DatePicker("Zusammen seit", selection: $anniversaryDate, in: ...Date(), displayedComponents: .date)
+            }
+        } header: {
+            Text("Jahrestag")
+        } footer: {
+            Text("Closer erinnert dich am Jahrestag und schon 2 Wochen sowie 3 Tage vorher, damit du ein Date planen oder ein Geschenk besorgen kannst.")
         }
     }
 
@@ -197,6 +227,7 @@ struct PersonFormView: View {
         if var person = original {
             person.name = trimmedName
             person.relationship = relationship
+            person.anniversary = anniversary(keeping: person.anniversary)
             person.phoneNumber = phone.isEmpty ? nil : phone
             person.email = mail.isEmpty ? nil : mail
             person.photoData = photoData
@@ -213,10 +244,20 @@ struct PersonFormView: View {
                 email: mail.isEmpty ? nil : mail,
                 photoData: photoData,
                 contactIdentifier: contactIdentifier,
-                reminders: reminders
+                reminders: reminders,
+                anniversary: anniversary(keeping: nil)
             ))
         }
         dismiss()
+    }
+
+    /// The anniversary to save: `nil` unless partner and entered. Keeps the reminder settings of
+    /// an existing one.
+    private func anniversary(keeping existing: Anniversary?) -> Anniversary? {
+        guard relationship == .partner, hasAnniversary else { return nil }
+        var anniversary = existing ?? Anniversary(date: anniversaryDate)
+        anniversary.date = anniversaryDate
+        return anniversary
     }
 
     private func delete() {

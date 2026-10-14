@@ -4,6 +4,7 @@ struct HomeView: View {
     @Environment(PeopleViewModel.self) private var viewModel
     @State private var showingAddPerson = false
     @State private var showingSettings = false
+    @State private var showingAnniversaryForm = false
 
     // MARK: - Computed helpers
 
@@ -49,6 +50,12 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     headerView
 
+                    if let partner = viewModel.partner {
+                        PartnerCardView(person: partner) {
+                            showingAnniversaryForm = true
+                        }
+                    }
+
                     if let next = upcoming.first {
                         featuredCard(for: next)
                     } else {
@@ -70,6 +77,14 @@ struct HomeView: View {
             }
             .background(Color.closerBackground.ignoresSafeArea())
             .navigationBarHidden(true)
+            .navigationDestination(for: Person.ID.self) { id in
+                PersonDetailView(personID: id)
+            }
+            .sheet(isPresented: $showingAnniversaryForm) {
+                if let partner = viewModel.partner {
+                    AnniversaryFormView(personID: partner.id, anniversary: partner.anniversary)
+                }
+            }
             .sheet(isPresented: $showingAddPerson) {
                 PersonFormView()
             }

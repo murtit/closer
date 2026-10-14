@@ -102,4 +102,34 @@ struct ReminderScheduleTests {
         #expect(summary.contains("26"))
         #expect(summary.hasSuffix("um 18:00"))
     }
+
+    // MARK: - Yearly
+
+    @Test func yearlyTriggerContainsMonthAndDayAndRepeats() {
+        let schedule = ReminderSchedule(frequency: .yearly, hour: 9, date: TestCalendar.date(2021, 2, 14))
+        let components = schedule.triggerComponents(calendar: calendar)
+        #expect(components.year == nil)
+        #expect(components.month == 2)
+        #expect(components.day == 14)
+        #expect(components.hour == 9)
+        #expect(schedule.repeats)
+    }
+
+    @Test func yearlyNextOccurrenceIsThisYearOrNext() {
+        let october = ReminderSchedule(frequency: .yearly, hour: 9, date: TestCalendar.date(2020, 10, 20))
+        #expect(october.nextOccurrence(after: monday, calendar: calendar) == TestCalendar.date(2026, 10, 20, 9))
+        let february = ReminderSchedule(frequency: .yearly, hour: 9, date: TestCalendar.date(2020, 2, 14))
+        #expect(february.nextOccurrence(after: monday, calendar: calendar) == TestCalendar.date(2027, 2, 14, 9))
+    }
+
+    @Test func yearlyOnLeapDayFiresOnTheTwentyEighth() {
+        let schedule = ReminderSchedule(frequency: .yearly, hour: 9, date: TestCalendar.date(2024, 2, 29))
+        #expect(schedule.triggerComponents(calendar: calendar).day == 28)
+        #expect(schedule.nextOccurrence(after: monday, calendar: calendar) == TestCalendar.date(2027, 2, 28, 9))
+    }
+
+    @Test func yearlySummary() {
+        let schedule = ReminderSchedule(frequency: .yearly, hour: 9, date: TestCalendar.date(2021, 2, 14))
+        #expect(schedule.summary(calendar: calendar) == "Jedes Jahr am 14. Februar um 09:00")
+    }
 }

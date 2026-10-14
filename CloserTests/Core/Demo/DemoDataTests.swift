@@ -29,7 +29,7 @@ struct DemoDataTests {
                 notifications: FakeNotificationScheduler(),
                 defaults: try #require(UserDefaults(suiteName: "DemoDataTests-\(UUID().uuidString)"))
             )
-            people.forEach(viewModel.add)
+            for person in people { viewModel.add(person) }
 
             let upcoming = viewModel.upcoming(after: reference, limit: 4, calendar: TestCalendar.zurich)
             #expect(upcoming.map(\.reminder.title) == [
@@ -42,6 +42,14 @@ struct DemoDataTests {
             let expected = TestCalendar.zurich.date(byAdding: .hour, value: 25, to: TestCalendar.date(2026, 10, 13, hour))
             #expect(upcoming.first?.date == expected)
         }
+    }
+
+    @Test func partnerHasAnAnniversaryInThreeWeeks() throws {
+        let people = DemoData.people(now: now, calendar: TestCalendar.zurich)
+        #expect(people.filter(\.isPartner).count == 1)
+        let anniversary = try #require(people.first(where: \.isPartner)?.anniversary)
+        #expect(anniversary.daysUntilNext(from: now, calendar: TestCalendar.zurich) == 23)
+        #expect(anniversary.nextNumber(from: now, calendar: TestCalendar.zurich) == 3)
     }
 
     @Test func viewModelStartsWithDemoPeople() {

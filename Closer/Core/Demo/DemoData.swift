@@ -52,6 +52,10 @@ enum DemoData {
             ReminderSchedule(frequency: .monthly, hour: hour, dayOfMonth: min(28, calendar.component(.day, from: day(days))))
         }
 
+        // Together for almost three years: the third anniversary is 23 days away.
+        let inThreeWeeks = calendar.date(byAdding: .day, value: 23, to: calendar.startOfDay(for: now)) ?? now
+        let gotTogether = calendar.date(byAdding: .year, value: -3, to: inThreeWeeks) ?? now
+
         return [
             Person(
                 name: "Lea Brunner",
@@ -63,7 +67,8 @@ enum DemoData {
                     Reminder(title: "Blumen kaufen", emoji: "💐", schedule: monthly(in: 9)),
                     Reminder(title: "Ein Kompliment machen", emoji: "💬", isEnabled: false,
                              schedule: ReminderSchedule(frequency: .daily, hour: 9)),
-                ]
+                ],
+                anniversary: Anniversary(date: gotTogether)
             ),
             Person(
                 name: "Mama",

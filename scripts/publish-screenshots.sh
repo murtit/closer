@@ -77,7 +77,8 @@ label() {
         03-person-hinzufuegen) echo "Person hinzufügen" ;;
         04-person) echo "Person" ;;
         05-erinnerung) echo "Erinnerung" ;;
-        06-einstellungen) echo "Einstellungen" ;;
+        06-jahrestag) echo "Jahrestag" ;;
+        07-einstellungen) echo "Einstellungen" ;;
         *) echo "$1" ;;
     esac
 }

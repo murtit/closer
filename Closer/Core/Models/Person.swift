@@ -12,6 +12,8 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
     /// `CNContact.identifier` of the imported contact, so it can be refreshed later.
     var contactIdentifier: String?
     var reminders: [Reminder]
+    /// Only used for the partner. Optional, so data saved before anniversaries existed still decodes.
+    var anniversary: Anniversary?
     var createdAt: Date
 
     init(
@@ -23,6 +25,7 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
         photoData: Data? = nil,
         contactIdentifier: String? = nil,
         reminders: [Reminder] = [],
+        anniversary: Anniversary? = nil,
         createdAt: Date = Date()
     ) {
         self.id = id
@@ -33,6 +36,7 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
         self.photoData = photoData
         self.contactIdentifier = contactIdentifier
         self.reminders = reminders
+        self.anniversary = anniversary
         self.createdAt = createdAt
     }
 
@@ -45,11 +49,25 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
         return letters.isEmpty ? "?" : letters.joined()
     }
 
-    var activeReminderCount: Int { reminders.filter(\.isEnabled).count }
+    var isPartner: Bool { relationship == .partner }
+
+    /// The anniversary, if this person is the partner and one was entered.
+    var partnerAnniversary: Anniversary? { isPartner ? anniversary : nil }
+
+    /// The person's own reminders plus those derived from the anniversary. This is what gets
+    /// scheduled as notifications and shown as upcoming.
+    func allReminders(calendar: Calendar = .current) -> [Reminder] {
+        reminders + (partnerAnniversary?.reminders(calendar: calendar) ?? [])
+    }
+
+    /// IDs of every notification this person may have scheduled, so all of them can be cancelled.
+    var notificationIDs: [UUID] { reminders.map(\.id) + (anniversary?.reminderIDs ?? []) }
+
+    var activeReminderCount: Int { allReminders().filter(\.isEnabled).count }
 
     /// The earliest upcoming reminder of this person.
     func nextReminder(after date: Date = Date(), calendar: Calendar = .current) -> (reminder: Reminder, date: Date)? {
-        reminders
+        allReminders(calendar: calendar)
             .compactMap { reminder in reminder.nextOccurrence(after: date, calendar: calendar).map { (reminder: reminder, date: $0) } }
             .min { $0.date < $1.date }
     }

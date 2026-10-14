@@ -1,12 +1,13 @@
 import Foundation
 
-/// When a reminder fires. Kept deliberately small: one-off, daily, weekly or monthly at a fixed time.
+/// When a reminder fires. Kept deliberately small: one-off, daily, weekly, monthly or yearly at a fixed time.
 struct ReminderSchedule: Codable, Equatable, Hashable {
     enum Frequency: String, Codable, CaseIterable, Identifiable {
         case once
         case daily
         case weekly
         case monthly
+        case yearly
 
         var id: String { rawValue }
 
@@ -16,6 +17,7 @@ struct ReminderSchedule: Codable, Equatable, Hashable {
             case .daily:   "Täglich"
             case .weekly:  "Wöchentlich"
             case .monthly: "Monatlich"
+            case .yearly:  "Jährlich"
             }
         }
     }
@@ -27,7 +29,8 @@ struct ReminderSchedule: Codable, Equatable, Hashable {
     var weekday: Int
     /// Day of month, 1…28 so that every month has it. Used for `.monthly`.
     var dayOfMonth: Int
-    /// Calendar day of a one-off reminder. Only the date part is used, time comes from `hour`/`minute`.
+    /// Calendar day of a one-off reminder, or month and day of a yearly one. Only the date part is
+    /// used, time comes from `hour`/`minute`.
     var date: Date
 
     init(
@@ -68,6 +71,11 @@ struct ReminderSchedule: Codable, Equatable, Hashable {
             components.weekday = weekday
         case .monthly:
             components.day = dayOfMonth
+        case .yearly:
+            let day = calendar.dateComponents([.month, .day], from: date)
+            components.month = day.month
+            // A trigger for 29 February would only fire in leap years.
+            components.day = day.month == 2 && day.day == 29 ? 28 : day.day
         }
         return components
     }
@@ -103,6 +111,13 @@ struct ReminderSchedule: Codable, Equatable, Hashable {
             return "Jeden \(Self.weekdayName(weekday, locale: locale)) um \(time)"
         case .monthly:
             return "Jeden \(dayOfMonth). des Monats um \(time)"
+        case .yearly:
+            let formatter = DateFormatter()
+            formatter.locale = locale
+            formatter.calendar = calendar
+            formatter.timeZone = calendar.timeZone
+            formatter.setLocalizedDateFormatFromTemplate("dMMMM")
+            return "Jedes Jahr am \(formatter.string(from: date)) um \(time)"
         }
     }
 

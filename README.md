@@ -1,6 +1,6 @@
 # Closer
 
-**Closer** ist eine iOS-App, die dir hilft, soziale Kontakte bewusst zu pflegen und die Menschen, die dir wichtig sind, näher bei dir zu halten. Du erfasst Personen (direkt aus deinen Kontakten) und planst pro Person Erinnerungen, damit Beziehungen im Alltag nicht untergehen: Blumen für die Partnerin, ein Anruf beim Grossvater oder endlich das Treffen mit dem Studienkollegen.
+**Closer** ist eine iOS-App, die dir hilft, soziale Kontakte bewusst zu pflegen und die Menschen, die dir wichtig sind, näher bei dir zu halten. Du erfasst Personen (direkt aus deinen Kontakten) und planst pro Person Erinnerungen, damit Beziehungen im Alltag nicht untergehen: Blumen für die Partnerin und eine Erinnerung vor eurem Jahrestag, ein Anruf beim Grossvater oder endlich das Treffen mit dem Studienkollegen.
 
 | | |
 |---|---|
@@ -49,6 +49,8 @@ closer/
 │   ├── Features/               # Ein Ordner pro Feature (View + ViewModel)
 │   │   ├── Home/
 │   │   │   └── Components/     # Feature-spezifische Unter-Views
+│   │   ├── Partner/            # Jahrestag und Partner-Karte
+│   │   │   └── Components/
 │   │   └── People/
 │   │       └── Components/
 │   └── Resources/              # Asset-Kataloge, Lokalisierung
@@ -70,6 +72,7 @@ Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien 
 - Personen samt Erinnerungen und Fotos liegen als JSON in *Application Support* (`people.json`).
 - Kontakte werden über `CNContactPickerViewController` gewählt. Der Picker läuft ausserhalb der App, deshalb braucht Closer weder die Kontakte-Berechtigung noch `NSContactsUsageDescription`.
 - Erinnerungen sind lokale Benachrichtigungen (`UNCalendarNotificationTrigger`), eine pro Erinnerung. iOS erlaubt maximal 64 geplante Benachrichtigungen pro App.
+- Es gibt höchstens eine:n Partner:in (`PeopleViewModel.canBePartner`). Ihr bzw. sein Jahrestag (`Anniversary`) erzeugt jährliche Erinnerungen für den Tag selbst und jeden Vorlauf (Standard: 14 und 3 Tage), mit festen IDs, damit sie beim Ändern sauber ersetzt werden. Sie werden nicht unter den eigenen Erinnerungen gespeichert, sondern bei Bedarf abgeleitet (`Person.allReminders()`).
 - Neue Features bekommen einen eigenen Ordner unter `Features/`. Geteilte Modelle gehören nach `Core/`, geteilte UI-Bausteine nach `DesignSystem/`.
 
 ### Design & App-Icon

@@ -12,6 +12,10 @@ extension Color {
     static let closerOnHero = Palette.onHero.color
     static let closerHeroAccent = Palette.heroAccent.color
     static let closerSage = Palette.sage.color
+    static let closerPartner = Palette.partner.color
+    static let closerPartnerEnd = Palette.partnerEnd.color
+    static let closerOnPartner = Palette.onPartner.color
+    static let closerPartnerAccent = Palette.partnerAccent.color
     static let closerAvatar = Palette.avatar.color
     static let closerOnAvatar = Palette.onAvatar.color
 }
@@ -28,6 +32,10 @@ extension ShapeStyle where Self == Color {
     static var closerOnHero: Color { Color.closerOnHero }
     static var closerHeroAccent: Color { Color.closerHeroAccent }
     static var closerSage: Color { Color.closerSage }
+    static var closerPartner: Color { Color.closerPartner }
+    static var closerPartnerEnd: Color { Color.closerPartnerEnd }
+    static var closerOnPartner: Color { Color.closerOnPartner }
+    static var closerPartnerAccent: Color { Color.closerPartnerAccent }
     static var closerAvatar: Color { Color.closerAvatar }
     static var closerOnAvatar: Color { Color.closerOnAvatar }
 }
