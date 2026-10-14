@@ -10,6 +10,7 @@ struct PersonDetailView: View {
     @State private var showingEditPerson = false
     @State private var showingNewReminder = false
     @State private var editingReminder: Reminder?
+    @State private var showingAnniversaryForm = false
 
     var body: some View {
         if let person = viewModel.person(withID: personID) {
@@ -22,6 +23,9 @@ struct PersonDetailView: View {
     private func content(for person: Person) -> some View {
         List {
             header(for: person)
+            if person.isPartner {
+                anniversarySection(for: person)
+            }
             remindersSection(for: person)
             if !person.openSuggestions.isEmpty {
                 suggestionsSection(for: person)
@@ -44,6 +48,9 @@ struct PersonDetailView: View {
         }
         .sheet(item: $editingReminder) { reminder in
             ReminderFormView(personID: personID, reminder: reminder)
+        }
+        .sheet(isPresented: $showingAnniversaryForm) {
+            AnniversaryFormView(personID: personID, anniversary: person.anniversary)
         }
     }
 
@@ -71,6 +78,53 @@ struct PersonDetailView: View {
             .padding(.vertical, 8)
             .listRowBackground(Color.clear)
         }
+    }
+
+    private func anniversarySection(for person: Person) -> some View {
+        Section {
+            Button {
+                showingAnniversaryForm = true
+            } label: {
+                if let anniversary = person.anniversary {
+                    HStack(spacing: 14) {
+                        Text("💞")
+                            .font(.system(size: 22))
+                            .frame(width: 42, height: 42)
+                            .background(Circle().fill(Color.closerAccentSoft))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Zusammen seit \(anniversary.date.formatted(date: .long, time: .omitted))")
+                                .foregroundStyle(.primary)
+                            Text(anniversary.togetherText())
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            if let countdown = anniversary.countdownText() {
+                                Text(countdown)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.closerAccent)
+                            }
+                            Text(anniversary.remindersSummary)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(.vertical, 2)
+                } else {
+                    Label("Jahrestag hinzufügen", systemImage: "calendar.badge.plus")
+                }
+            }
+            .accessibilityIdentifier("anniversaryRow")
+        } header: {
+            Text("Jahrestag")
+        } footer: {
+            if person.anniversary == nil {
+                Text("Closer erinnert dich am Jahrestag und schon vorher, damit du ein Date planen oder ein Geschenk besorgen kannst.")
+            }
+        }
+        .listRowBackground(Color.closerSurface)
     }
 
     private func remindersSection(for person: Person) -> some View {

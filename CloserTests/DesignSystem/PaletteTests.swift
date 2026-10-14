@@ -44,6 +44,16 @@ struct PaletteTests {
         #expect(dark.contrastRatio(to: Palette.background.resolved(for: .dark)) > 1.2)
     }
 
+    /// The partner card is built from the icon's warm colours, not a new hue.
+    @Test func partnerCardIsWarm() {
+        #expect(Palette.partner.resolved(for: .light) == Palette.coral)
+        #expect(Palette.partnerEnd.resolved(for: .light) == Palette.blend)
+        for token in [Palette.partner, Palette.partnerEnd] {
+            let dark = token.resolved(for: .dark)
+            #expect(dark.red > dark.green && dark.red > dark.blue)
+        }
+    }
+
     @Test func surfacesFollowTheAppearance() {
         for token in [Palette.background, Palette.surface] {
             #expect(token.resolved(for: .light).relativeLuminance > 0.8)
@@ -76,6 +86,11 @@ struct PaletteTests {
         ("heroAccent on hero", Palette.heroAccent, Palette.hero),
         ("sage on surface", Palette.sage, Palette.surface),
         ("onAvatar on avatar", Palette.onAvatar, Palette.avatar),
+        ("onPartner on partner", Palette.onPartner, Palette.partner),
+        ("onPartner on partnerEnd", Palette.onPartner, Palette.partnerEnd),
+        ("partnerAccent on partner", Palette.partnerAccent, Palette.partner),
+        ("partnerAccent on partnerEnd", Palette.partnerAccent, Palette.partnerEnd),
+        ("partner on onPartner", Palette.partner, Palette.onPartner),
     ])
     func textIsReadableInBothModes(name: String, foreground: ThemeColor, background: ThemeColor) {
         for style in styles {

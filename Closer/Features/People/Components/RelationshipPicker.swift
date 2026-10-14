@@ -3,10 +3,13 @@ import SwiftUI
 /// Chips for the built-in relationships plus "Andere" with a free-text label.
 struct RelationshipPicker: View {
     @Binding var relationship: Relationship
+    /// `false` when someone else already is the partner; the chip is then disabled.
+    let isPartnerAvailable: Bool
     @State private var otherLabel: String
 
-    init(relationship: Binding<Relationship>) {
+    init(relationship: Binding<Relationship>, isPartnerAvailable: Bool = true) {
         _relationship = relationship
+        self.isPartnerAvailable = isPartnerAvailable
         if case .other(let label) = relationship.wrappedValue {
             _otherLabel = State(initialValue: label)
         } else {
@@ -24,6 +27,12 @@ struct RelationshipPicker: View {
                 }
             }
 
+            if !isPartnerAvailable && relationship != .partner {
+                Text("Du hast bereits eine:n Partner:in erfasst.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             if relationship.isOther {
                 TextField("z. B. Arbeitskollege, Nachbarin", text: $otherLabel)
                     .textInputAutocapitalization(.words)
@@ -37,6 +46,7 @@ struct RelationshipPicker: View {
 
     private func chip(for choice: Relationship) -> some View {
         let isSelected = choice.sortIndex == relationship.sortIndex
+        let isDisabled = choice == .partner && !isPartnerAvailable && !isSelected
         return Button {
             withAnimation(.spring(response: 0.3)) {
                 relationship = choice
@@ -63,6 +73,8 @@ struct RelationshipPicker: View {
             .foregroundStyle(isSelected ? Color.closerOnAccentSoft : Color.primary)
         }
         .buttonStyle(.plain)
+        .disabled(isDisabled)
+        .opacity(isDisabled ? 0.4 : 1)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }

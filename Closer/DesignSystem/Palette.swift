@@ -28,6 +28,11 @@ nonisolated enum Palette {
     /// it stands out from the near-black background.
     static let hero = ThemeColor(Palette.pine, dark: RGBColor(hex: 0x1A3630))
 
+    /// The partner's card on the home screen, a warm gradient from `partner` to `partnerEnd`:
+    /// coral into the coral/cream blend by day, a deep rosewood at night.
+    static let partner = ThemeColor(Palette.coral, dark: RGBColor(hex: 0x4A2A24))
+    static let partnerEnd = ThemeColor(Palette.blend, dark: RGBColor(hex: 0x2B1E1B))
+
     // MARK: - Content
 
     /// Tint for buttons, toggles, links and icons. Coral is too light on cream, so the light
@@ -45,6 +50,10 @@ nonisolated enum Palette {
     static let heroAccent = ThemeColor(Palette.coral)
     /// Secondary accent derived from pine, for figures next to `accent`.
     static let sage = ThemeColor(light: 0x3B6A5D, dark: 0x8FBFAE)
+    /// Text on the partner card.
+    static let onPartner = ThemeColor(Palette.pine, dark: Palette.cream)
+    /// Labels and the heart on the partner card that should stand out.
+    static let partnerAccent = ThemeColor(RGBColor(hex: 0x7A2E1C), dark: Palette.coral)
     /// Avatar without a photo: coral circle with pine initials, as in the app icon.
     static let avatar = ThemeColor(Palette.coral)
     static let onAvatar = ThemeColor(Palette.pine)
