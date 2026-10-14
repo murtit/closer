@@ -114,8 +114,12 @@ struct PersonDetailView: View {
                     .padding(.vertical, 2)
                 } else {
                     Label("Jahrestag hinzufügen", systemImage: "calendar.badge.plus")
+                        .foregroundStyle(.closerAccent)
                 }
             }
+            // Plain, so only the countdown is tinted and not the whole row.
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
             .accessibilityIdentifier("anniversaryRow")
         } header: {
             Text("Jahrestag")

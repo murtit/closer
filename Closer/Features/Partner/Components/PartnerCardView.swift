@@ -52,7 +52,9 @@ struct PartnerCardView: View {
         HStack(spacing: 16) {
             ZStack(alignment: .bottomTrailing) {
                 PersonAvatarView(person: person, size: 64)
-                    .overlay(Circle().strokeBorder(Color.closerOnPartner.opacity(0.15), lineWidth: 2))
+                    // The avatar is coral like the card by day; the ring sets it apart.
+                    .padding(3)
+                    .background(Circle().fill(Color.closerBackground))
                 Image(systemName: "heart.fill")
                     .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(.closerPartner)
