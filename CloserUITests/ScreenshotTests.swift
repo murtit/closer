@@ -31,6 +31,7 @@ final class ScreenshotTests: XCTestCase {
         app.launch()
 
         XCTAssertTrue(app.staticTexts["Wem bist du heute nah?"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.descendants(matching: .any)["partnerCard"].exists)
         snapshot("01-heute", appearance)
 
         app.tabBars.buttons["Personen"].tap()
@@ -54,12 +55,18 @@ final class ScreenshotTests: XCTestCase {
         app.navigationBars["Erinnerung"].buttons["Abbrechen"].tap()
 
         XCTAssertTrue(app.navigationBars["Lea Brunner"].waitForExistence(timeout: 5))
+        app.buttons["anniversaryRow"].tap()
+        XCTAssertTrue(app.navigationBars["Jahrestag"].waitForExistence(timeout: 5))
+        snapshot("06-jahrestag", appearance)
+        app.navigationBars["Jahrestag"].buttons["Abbrechen"].tap()
+
+        XCTAssertTrue(app.navigationBars["Lea Brunner"].waitForExistence(timeout: 5))
         app.tabBars.buttons["Heute"].tap()
         let settingsButton = app.buttons["Einstellungen"]
         XCTAssertTrue(settingsButton.waitForExistence(timeout: 5))
         settingsButton.tap()
         XCTAssertTrue(app.navigationBars["Einstellungen"].waitForExistence(timeout: 5))
-        snapshot("06-einstellungen", appearance)
+        snapshot("07-einstellungen", appearance)
     }
 
     // MARK: - Helpers
