@@ -103,6 +103,27 @@ struct PersonTests {
         #expect(person.isPartner)
     }
 
+    @Test func personSavedWithoutSoundPlaysTheDefault() throws {
+        let json = #"{"id":"\#(UUID().uuidString)","name":"Sara","relationship":{"family":{}},"reminders":[],"createdAt":0}"#
+        let person = try JSONDecoder().decode(Person.self, from: Data(json.utf8))
+        #expect(person.notificationSound == nil)
+        #expect(person.sound == .standard)
+    }
+
+    @Test func codableRoundTripKeepsTheSound() throws {
+        var original = Person(name: "Sara", relationship: .friend)
+        original.sound = .funke
+        let data = try JSONEncoder().encode(original)
+        #expect(try JSONDecoder().decode(Person.self, from: data).sound == .funke)
+    }
+
+    @Test func choosingTheDefaultSoundStoresNothing() {
+        var person = Person(name: "Sara", relationship: .friend, notificationSound: .morgen)
+        person.sound = .standard
+        #expect(person.notificationSound == nil)
+        #expect(person.sound == .standard)
+    }
+
     @Test func codableRoundTripKeepsTheAnniversary() throws {
         let original = Person(name: "Sara", relationship: .partner, anniversary: Anniversary(date: TestCalendar.date(2021, 2, 14)))
         let data = try JSONEncoder().encode(original)

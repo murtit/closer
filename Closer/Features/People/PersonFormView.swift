@@ -18,6 +18,7 @@ struct PersonFormView: View {
     @State private var selectedSuggestions: Set<String>
     @State private var hasAnniversary: Bool
     @State private var anniversaryDate: Date
+    @State private var sound: NotificationSound
     @State private var showingContactPicker = false
     @State private var confirmingDelete = false
 
@@ -35,6 +36,7 @@ struct PersonFormView: View {
         _selectedSuggestions = State(initialValue: Self.preselected(for: relationship))
         _hasAnniversary = State(initialValue: person?.anniversary != nil)
         _anniversaryDate = State(initialValue: person?.anniversary?.date ?? Date())
+        _sound = State(initialValue: person?.sound ?? .standard)
     }
 
     private var isAdding: Bool { original == nil }
@@ -60,6 +62,7 @@ struct PersonFormView: View {
                     if isAdding {
                         suggestionsSection
                     }
+                    soundSection
                     detailsSection
                     if !isAdding {
                         deleteSection
@@ -177,6 +180,21 @@ struct PersonFormView: View {
         }
     }
 
+    private var soundSection: some View {
+        Section {
+            NavigationLink {
+                NotificationSoundPicker(sound: $sound)
+            } label: {
+                LabeledContent("Ton", value: sound.title)
+            }
+            .accessibilityIdentifier("notificationSoundRow")
+        } header: {
+            Text("Benachrichtigungen")
+        } footer: {
+            Text("So erkennst du schon am Ton, an wen du denken möchtest.")
+        }
+    }
+
     private var detailsSection: some View {
         Section("Kontaktdaten") {
             TextField("Telefon", text: $phoneNumber)
@@ -232,12 +250,13 @@ struct PersonFormView: View {
             person.email = mail.isEmpty ? nil : mail
             person.photoData = photoData
             person.contactIdentifier = contactIdentifier
+            person.sound = sound
             viewModel.update(person)
         } else {
             let reminders = relationship.suggestions
                 .filter { selectedSuggestions.contains($0.id) }
                 .map { $0.makeReminder() }
-            viewModel.add(Person(
+            var person = Person(
                 name: trimmedName,
                 relationship: relationship,
                 phoneNumber: phone.isEmpty ? nil : phone,
@@ -246,7 +265,9 @@ struct PersonFormView: View {
                 contactIdentifier: contactIdentifier,
                 reminders: reminders,
                 anniversary: anniversary(keeping: nil)
-            ))
+            )
+            person.sound = sound
+            viewModel.add(person)
         }
         dismiss()
     }

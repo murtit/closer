@@ -14,6 +14,9 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
     var reminders: [Reminder]
     /// Only used for the partner. Optional, so data saved before anniversaries existed still decodes.
     var anniversary: Anniversary?
+    /// Sound of this person's notifications. Optional, so data saved before sounds existed still
+    /// decodes; `nil` plays the system default. Read it through `sound`.
+    var notificationSound: NotificationSound?
     var createdAt: Date
 
     init(
@@ -26,6 +29,7 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
         contactIdentifier: String? = nil,
         reminders: [Reminder] = [],
         anniversary: Anniversary? = nil,
+        notificationSound: NotificationSound? = nil,
         createdAt: Date = Date()
     ) {
         self.id = id
@@ -37,6 +41,7 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
         self.contactIdentifier = contactIdentifier
         self.reminders = reminders
         self.anniversary = anniversary
+        self.notificationSound = notificationSound
         self.createdAt = createdAt
     }
 
@@ -50,6 +55,12 @@ struct Person: Identifiable, Codable, Equatable, Hashable {
     }
 
     var isPartner: Bool { relationship == .partner }
+
+    /// The sound this person's notifications play.
+    var sound: NotificationSound {
+        get { notificationSound ?? .standard }
+        set { notificationSound = newValue == .standard ? nil : newValue }
+    }
 
     /// The anniversary, if this person is the partner and one was entered.
     var partnerAnniversary: Anniversary? { isPartner ? anniversary : nil }

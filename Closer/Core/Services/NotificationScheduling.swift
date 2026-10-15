@@ -46,7 +46,7 @@ final class UserNotificationScheduler: NotificationScheduling {
         let content = UNMutableNotificationContent()
         content.title = person.name
         content.body = "\(reminder.emoji) \(reminder.title)"
-        content.sound = .default
+        content.sound = person.sound.userNotificationSound
         content.threadIdentifier = person.id.uuidString
         content.userInfo = ["personID": person.id.uuidString]
 

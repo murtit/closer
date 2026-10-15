@@ -310,6 +310,45 @@ struct PeopleViewModelTests {
         #expect(upcoming.map(\.date) == [TestCalendar.date(2026, 10, 17, 9), TestCalendar.date(2026, 10, 20, 9), TestCalendar.date(2027, 10, 6, 9)])
     }
 
+    // MARK: - Notification sound
+
+    @Test func remindersAreScheduledWithThePersonsSound() async {
+        let viewModel = makeViewModel()
+        var person = grandpa()
+        person.sound = .gruss
+        viewModel.add(person)
+        await viewModel.pendingNotificationWork?.value
+
+        #expect(notifications.sounds[person.reminders[0].id] == .gruss)
+    }
+
+    @Test func changingTheSoundReschedulesWithTheNewSound() async {
+        let viewModel = makeViewModel()
+        var person = grandpa()
+        viewModel.add(person)
+        await viewModel.pendingNotificationWork?.value
+        #expect(notifications.sounds[person.reminders[0].id] == .standard)
+
+        person.sound = .tropfen
+        viewModel.update(person)
+        await viewModel.pendingNotificationWork?.value
+
+        #expect(notifications.sounds[person.reminders[0].id] == .tropfen)
+        #expect(makeViewModel().person(withID: person.id)?.sound == .tropfen)
+    }
+
+    @Test func anniversaryRemindersPlayThePartnersSound() async {
+        let viewModel = makeViewModel()
+        var partner = Person(name: "Sara", relationship: .partner, anniversary: Anniversary(date: TestCalendar.date(2021, 2, 14)))
+        partner.sound = .naehe
+        viewModel.add(partner)
+        await viewModel.pendingNotificationWork?.value
+
+        let ids = partner.anniversary?.reminderIDs ?? []
+        #expect(!ids.isEmpty)
+        #expect(ids.allSatisfy { notifications.sounds[$0] == .naehe })
+    }
+
     // MARK: - Notifications & migration
 
     @Test func syncReschedulesEverythingWhenAuthorized() async {

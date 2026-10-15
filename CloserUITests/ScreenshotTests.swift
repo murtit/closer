@@ -61,12 +61,25 @@ final class ScreenshotTests: XCTestCase {
         app.navigationBars["Jahrestag"].buttons["Abbrechen"].tap()
 
         XCTAssertTrue(app.navigationBars["Lea Brunner"].waitForExistence(timeout: 5))
+        app.navigationBars["Lea Brunner"].buttons["Bearbeiten"].tap()
+        XCTAssertTrue(app.navigationBars["Person bearbeiten"].waitForExistence(timeout: 5))
+        let soundRow = app.buttons["notificationSoundRow"]
+        if !soundRow.isHittable { app.swipeUp() }
+        soundRow.tap()
+        XCTAssertTrue(app.navigationBars["Benachrichtigungston"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["sound.naehe"].isSelected)
+        snapshot("07-benachrichtigungston", appearance)
+        app.navigationBars["Benachrichtigungston"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Person bearbeiten"].waitForExistence(timeout: 5))
+        app.navigationBars["Person bearbeiten"].buttons["Abbrechen"].tap()
+
+        XCTAssertTrue(app.navigationBars["Lea Brunner"].waitForExistence(timeout: 5))
         app.tabBars.buttons["Heute"].tap()
         let settingsButton = app.buttons["Einstellungen"]
         XCTAssertTrue(settingsButton.waitForExistence(timeout: 5))
         settingsButton.tap()
         XCTAssertTrue(app.navigationBars["Einstellungen"].waitForExistence(timeout: 5))
-        snapshot("07-einstellungen", appearance)
+        snapshot("08-einstellungen", appearance)
     }
 
     // MARK: - Helpers
