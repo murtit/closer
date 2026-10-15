@@ -5,6 +5,8 @@ import Observation
 @Observable
 final class PeopleViewModel {
     private(set) var people: [Person] = []
+    /// Notification sounds the user added, oldest first.
+    private(set) var customSounds: [CustomSound] = []
     var showPermissionAlert = false
     /// Set when saved data could not be read or written.
     var storageError: String?
@@ -15,6 +17,7 @@ final class PeopleViewModel {
     private let store: PeopleStore
     private let notifications: any NotificationScheduling
     private let defaults: UserDefaults
+    private let sounds: SoundLibrary
 
     /// Notification work runs in order; tests await this to observe the result.
     @ObservationIgnored
@@ -23,11 +26,14 @@ final class PeopleViewModel {
     init(
         store: PeopleStore = PeopleStore(),
         notifications: any NotificationScheduling = UserNotificationScheduler(),
-        defaults: UserDefaults = .standard
+        defaults: UserDefaults = .standard,
+        sounds: SoundLibrary = SoundLibrary()
     ) {
         self.store = store
         self.notifications = notifications
         self.defaults = defaults
+        self.sounds = sounds
+        customSounds = sounds.customSounds
         load()
         migrateLegacyReminders()
     }
@@ -149,6 +155,41 @@ final class PeopleViewModel {
         guard var person = person(withID: personID), person.isPartner else { return }
         person.anniversary = anniversary
         update(person)
+    }
+
+    // MARK: - Sounds
+
+    /// Name shown for a sound. A custom sound that no longer exists plays the system default and
+    /// is shown as such.
+    func title(for sound: NotificationSound) -> String {
+        guard case .custom(let id) = sound else { return sound.title }
+        return sounds.customSound(withID: id)?.name ?? NotificationSound.standard.title
+    }
+
+    /// File to preview the sound with, `nil` for the system default.
+    func soundURL(for sound: NotificationSound) -> URL? {
+        sounds.url(for: sound)
+    }
+
+    /// Adds the audio file at `url` as a custom sound, cut to under 30 seconds.
+    func importSound(from url: URL) async throws -> CustomSound {
+        let sound = try await sounds.importSound(from: url)
+        customSounds = sounds.customSounds
+        return sound
+    }
+
+    /// Removes a custom sound. People who used it go back to the system default.
+    func deleteSound(_ sound: CustomSound) {
+        do {
+            try sounds.delete(sound.id)
+        } catch {
+            storageError = "Der Ton konnte nicht gelöscht werden."
+        }
+        customSounds = sounds.customSounds
+        for var person in people where person.sound == sound.sound {
+            person.sound = .standard
+            update(person)
+        }
     }
 
     // MARK: - Notifications

@@ -185,7 +185,7 @@ struct PersonFormView: View {
             NavigationLink {
                 NotificationSoundPicker(sound: $sound)
             } label: {
-                LabeledContent("Ton", value: sound.title)
+                LabeledContent("Ton", value: viewModel.title(for: sound))
             }
             .accessibilityIdentifier("notificationSoundRow")
         } header: {

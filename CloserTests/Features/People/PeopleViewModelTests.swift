@@ -7,6 +7,7 @@ struct PeopleViewModelTests {
     private let store: PeopleStore
     private let defaults: UserDefaults
     private let notifications: FakeNotificationScheduler
+    private let soundsDirectory = TestAudio.temporaryFolder()
 
     init() {
         notifications = FakeNotificationScheduler()
@@ -21,7 +22,7 @@ struct PeopleViewModelTests {
     }
 
     private func makeViewModel() -> PeopleViewModel {
-        PeopleViewModel(store: store, notifications: notifications, defaults: defaults)
+        PeopleViewModel(store: store, notifications: notifications, defaults: defaults, sounds: SoundLibrary(directory: soundsDirectory))
     }
 
     private func grandpa() -> Person {
@@ -347,6 +348,37 @@ struct PeopleViewModelTests {
         let ids = partner.anniversary?.reminderIDs ?? []
         #expect(!ids.isEmpty)
         #expect(ids.allSatisfy { notifications.sounds[$0] == .naehe })
+    }
+
+    @Test func importedSoundIsOfferedAndNamedAfterItsFile() async throws {
+        let viewModel = makeViewModel()
+        let custom = try await viewModel.importSound(from: try TestAudio.tone(seconds: 2, name: "Omas Lachen"))
+
+        #expect(viewModel.customSounds == [custom])
+        #expect(viewModel.title(for: custom.sound) == "Omas Lachen")
+        #expect(viewModel.soundURL(for: custom.sound) != nil)
+        #expect(makeViewModel().customSounds == [custom])
+    }
+
+    @Test func deletingACustomSoundSendsItsPeopleBackToTheDefault() async throws {
+        let viewModel = makeViewModel()
+        let custom = try await viewModel.importSound(from: try TestAudio.tone(seconds: 1))
+        var person = grandpa()
+        person.sound = custom.sound
+        viewModel.add(person)
+        await viewModel.pendingNotificationWork?.value
+        #expect(notifications.sounds[person.reminders[0].id] == custom.sound)
+
+        viewModel.deleteSound(custom)
+        await viewModel.pendingNotificationWork?.value
+
+        #expect(viewModel.customSounds.isEmpty)
+        #expect(viewModel.person(withID: person.id)?.sound == .standard)
+        #expect(notifications.sounds[person.reminders[0].id] == .standard)
+    }
+
+    @Test func missingCustomSoundIsShownAsTheDefault() {
+        #expect(makeViewModel().title(for: .custom(UUID())) == "Standard")
     }
 
     // MARK: - Notifications & migration
