@@ -8,6 +8,9 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- **Benachrichtigungston pro Person**: Im Formular einer Person unter *Benachrichtigungen › Ton* wählst du, welcher Ton ihre Erinnerungen ankündigt. Neben dem iOS-Standardton gibt es fünf eigene Closer-Töne (Nähe, Funke, Tropfen, Morgen, Gruss); antippen spielt sie zur Probe ab. Der Ton gilt für alle Erinnerungen der Person, auch für die des Jahrestags. Bestehende Personen behalten den Standardton.
+- `scripts/generate-notification-sounds.py` erzeugt die Töne als WAV unter `Closer/Resources/Sounds/`; die CI prüft, dass die Dateien zum Skript passen.
+- Screenshot-Test für die Tonauswahl.
 - **Partner:in im Fokus**: Auf „Heute“ steht ganz oben eine eigene, warme Karte für deine:n Partner:in mit Foto, „Seit … Tagen zusammen“, Countdown zum nächsten Jahrestag und einer Schaltfläche für eine liebe Nachricht. Ein Tipp öffnet die Person.
 - **Jahrestag**: Für die Partnerin bzw. den Partner lässt sich der Tag eintragen, an dem ihr zusammengekommen seid (beim Erfassen oder im Personen-Detail). Closer erinnert jedes Jahr am Tag selbst und standardmässig schon 2 Wochen („Zeit für ein Geschenk“) und 3 Tage vorher („Zeit, ein Date zu planen“). Vorlauf (1, 3, 7, 14 oder 30 Tage), Uhrzeit und Ein/Aus sind einstellbar. Jahrestags-Erinnerungen erscheinen auch bei den nächsten Erinnerungen.
 - Erinnerungen können jetzt auch **jährlich** wiederholt werden (z. B. für Geburtstage). Am 29. Februar fällt eine jährliche Erinnerung in anderen Jahren auf den 28.
@@ -19,7 +22,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Personen-Detail mit Schnellaktionen zum Anrufen, Schreiben und Mailen.
 - Startseite zeigt die nächsten anstehenden Erinnerungen über alle Personen.
 - Tests für Modelle, Persistenz, Kontakt-Import und `PeopleViewModel`.
-- UI-Test-Target `CloserUITests`: Screenshot-Tests gehen die Hauptscreens (Heute, Personen, Person hinzufügen, Person, Erinnerung, Jahrestag, Einstellungen) im Light und Dark Mode durch.
+- UI-Test-Target `CloserUITests`: Screenshot-Tests gehen die Hauptscreens (Heute, Personen, Person hinzufügen, Person, Erinnerung, Jahrestag, Benachrichtigungston, Einstellungen) im Light und Dark Mode durch.
 - Startargument `-demo-data` (nur Debug) startet die App mit festen Beispielpersonen in einem temporären Speicher, ohne echte Daten oder Benachrichtigungen anzufassen. `-demo-appearance light|dark` erzwingt das Erscheinungsbild.
 - CI erstellt bei jedem Pull Request Screenshots im Simulator, lädt sie als Artefakt *Screenshots* hoch und zeigt sie in einem automatisch aktualisierten PR-Kommentar.
 - Neues App-Icon: zwei leicht überlappende Kreise in Korallorange (`#F5A58C`) und Creme-Rosé (`#F8F3E9`) auf tiefem Tannengrün (`#10231F`), inklusive Dark- und Tinted-Variante. Quelle als SVG unter `design/app-icon/`, erzeugt mit `scripts/generate-app-icon.py`; die CI prüft, dass die PNGs zur Vorlage passen.

@@ -68,7 +68,8 @@ enum DemoData {
                     Reminder(title: "Ein Kompliment machen", emoji: "💬", isEnabled: false,
                              schedule: ReminderSchedule(frequency: .daily, hour: 9)),
                 ],
-                anniversary: Anniversary(date: gotTogether)
+                anniversary: Anniversary(date: gotTogether),
+                notificationSound: .naehe
             ),
             Person(
                 name: "Mama",

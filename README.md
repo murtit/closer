@@ -53,7 +53,7 @@ closer/
 │   │   │   └── Components/
 │   │   └── People/
 │   │       └── Components/
-│   └── Resources/              # Asset-Kataloge, Lokalisierung
+│   └── Resources/              # Asset-Kataloge, Benachrichtigungstöne (Sounds/, generiert)
 ├── CloserTests/                # Unit-Tests (Swift Testing), spiegelt die App-Struktur
 ├── CloserUITests/              # UI- und Screenshot-Tests (XCTest)
 ├── Closer.xcodeproj/           # Xcode-Projekt inkl. geteiltem Scheme
@@ -73,6 +73,7 @@ Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien 
 - Kontakte werden über `CNContactPickerViewController` gewählt. Der Picker läuft ausserhalb der App, deshalb braucht Closer weder die Kontakte-Berechtigung noch `NSContactsUsageDescription`.
 - Erinnerungen sind lokale Benachrichtigungen (`UNCalendarNotificationTrigger`), eine pro Erinnerung. iOS erlaubt maximal 64 geplante Benachrichtigungen pro App.
 - Es gibt höchstens eine:n Partner:in (`PeopleViewModel.canBePartner`). Ihr bzw. sein Jahrestag (`Anniversary`) erzeugt jährliche Erinnerungen für den Tag selbst und jeden Vorlauf (Standard: 14 und 3 Tage), mit festen IDs, damit sie beim Ändern sauber ersetzt werden. Sie werden nicht unter den eigenen Erinnerungen gespeichert, sondern bei Bedarf abgeleitet (`Person.allReminders()`).
+- Pro Person lässt sich ein Benachrichtigungston wählen (`NotificationSound`, gespeichert in `Person.notificationSound`; fehlt der Wert, spielt der iOS-Standardton). Alle Erinnerungen dieser Person, auch die des Jahrestags, werden mit diesem Ton geplant.
 - Neue Features bekommen einen eigenen Ordner unter `Features/`. Geteilte Modelle gehören nach `Core/`, geteilte UI-Bausteine nach `DesignSystem/`.
 
 ### Design & App-Icon
@@ -85,6 +86,17 @@ Das Icon wird aus seiner Geometrie erzeugt, nicht von Hand gezeichnet:
 scripts/generate-app-icon.py          # SVGs in design/app-icon/ und PNGs im Asset-Katalog neu erzeugen
 scripts/generate-app-icon.py --check  # prüft, ob die eingecheckten Dateien aktuell sind (läuft in der CI)
 ```
+
+### Benachrichtigungstöne
+
+Apps dürfen die Klingel- und Hinweistöne des iPhones nicht verwenden. Für Benachrichtigungen spielt iOS nur den Standardton oder Töne, die mit der App ausgeliefert werden (`UNNotificationSound(named:)`, `.wav`/`.aiff`/`.caf`, höchstens 30 Sekunden). Closer bringt deshalb eigene Töne mit: Nähe, Funke, Tropfen, Morgen und Gruss. Sie werden wie das Icon aus Code erzeugt (ein paar Noten, glockenartig synthetisiert), nicht von Hand eingespielt:
+
+```bash
+scripts/generate-notification-sounds.py          # Closer/Resources/Sounds/*.wav neu erzeugen
+scripts/generate-notification-sounds.py --check  # prüft, ob die eingecheckten Töne aktuell sind (läuft in der CI)
+```
+
+Einen Ton ändern oder ergänzen: Funktion im Skript anpassen bzw. hinzufügen und in `FILES` eintragen, Skript ausführen, dann den Fall in `NotificationSound` ergänzen (Dateiname `closer-<rawValue>.wav`). `SoundPreviewPlayerTests` prüft, dass jeder angebotene Ton im Bundle liegt und das Format stimmt.
 
 ## Versionierung & Releases
 
