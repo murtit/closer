@@ -96,7 +96,9 @@ scripts/generate-notification-sounds.py          # Closer/Resources/Sounds/*.wav
 scripts/generate-notification-sounds.py --check  # prüft, ob die eingecheckten Töne aktuell sind (läuft in der CI)
 ```
 
-Einen Ton ändern oder ergänzen: Funktion im Skript anpassen bzw. hinzufügen und in `FILES` eintragen, Skript ausführen, dann den Fall in `NotificationSound` ergänzen (Dateiname `closer-<rawValue>.wav`). `SoundPreviewPlayerTests` prüft, dass jeder angebotene Ton im Bundle liegt und das Format stimmt.
+Zusätzlich kann man **eigene Töne** aus der Dateien-App hinzufügen (z. B. MP3, M4A, WAV, AIFF). `SoundFileConverter` wandelt sie in 16-bit-PCM-CAF um und kürzt sie auf 29,5 Sekunden mit kurzem Ausblenden; `SoundLibrary` legt sie unter `Library/Sounds/<UUID>.caf` ab, dem einzigen Ordner ausserhalb des Bundles, in dem iOS Benachrichtigungstöne sucht. Die Namen stehen daneben in `custom-sounds.json`. Eigene Töne gelten für alle Personen; wird einer gelöscht, fallen die betroffenen Personen auf „Standard“ zurück.
+
+Einen Closer-Ton ändern oder ergänzen: Funktion im Skript anpassen bzw. hinzufügen und in `FILES` eintragen, Skript ausführen, dann den Fall in `NotificationSound` ergänzen (Dateiname `closer-<rawValue>.wav`). `SoundPreviewPlayerTests` prüft, dass jeder angebotene Ton im Bundle liegt und das Format stimmt.
 
 ## Versionierung & Releases
 

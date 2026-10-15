@@ -25,10 +25,13 @@ enum DemoData {
     static func makeViewModel(now: Date = Date()) -> PeopleViewModel {
         let store = PeopleStore(fileURL: FileManager.default.temporaryDirectory.appending(path: "demo-people.json"))
         try? store.save(people(now: now))
+        let soundsDirectory = FileManager.default.temporaryDirectory.appending(path: "demo-sounds")
+        try? FileManager.default.removeItem(at: soundsDirectory)
         return PeopleViewModel(
             store: store,
             notifications: DemoNotificationScheduler(),
-            defaults: UserDefaults(suiteName: "ch.murtit.closer.demo") ?? .standard
+            defaults: UserDefaults(suiteName: "ch.murtit.closer.demo") ?? .standard,
+            sounds: SoundLibrary(directory: soundsDirectory)
         )
     }
 
