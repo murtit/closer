@@ -7,6 +7,9 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Changed
+- Bundle-ID von `ch.murtit.closer` auf `ch.murtit.closer.app` geändert (Test-Targets entsprechend `ch.murtit.closer.app.tests` und `ch.murtit.closer.app.uitests`), weil `ch.murtit.closer` noch bei einem anderen Apple-Developer-Team registriert ist. Auf dem Gerät erscheint Closer dadurch als neue App; Daten der alten Installation werden nicht übernommen.
+
 ### Added
 - **Eigene Benachrichtigungstöne**: In der Tonauswahl lässt sich unter *Eigene Töne* eine Audiodatei aus der Dateien-App hinzufügen (z. B. eine Sprachnachricht oder ein Lied als MP3, M4A, WAV oder AIFF). Closer kürzt sie auf unter 30 Sekunden mit sanftem Ausblenden, spielt sie zur Probe ab und wählt sie für die Person. Eigene Töne stehen bei allen Personen zur Auswahl und lassen sich per Wischen löschen; betroffene Personen erhalten dann wieder den Standardton.
 - **Benachrichtigungston pro Person**: Im Formular einer Person unter *Benachrichtigungen › Ton* wählst du, welcher Ton ihre Erinnerungen ankündigt. Neben dem iOS-Standardton gibt es fünf eigene Closer-Töne (Nähe, Funke, Tropfen, Morgen, Gruss); antippen spielt sie zur Probe ab. Der Ton gilt für alle Erinnerungen der Person, auch für die des Jahrestags. Bestehende Personen behalten den Standardton.
