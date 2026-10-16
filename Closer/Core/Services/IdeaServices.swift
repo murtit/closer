@@ -26,4 +26,15 @@ final class IdeaServices {
         let current = generator.availability
         if current != availability { availability = current }
     }
+
+    /// While the model is still downloading, checks again every `interval` until it is ready (or
+    /// anything else) or the task is cancelled, e.g. when the ideas screen closes. iOS does not
+    /// notify apps when the download finishes.
+    func waitWhileModelLoads(checkingEvery interval: Duration = .seconds(3)) async {
+        refreshAvailability()
+        while availability == .notReady, !Task.isCancelled {
+            try? await Task.sleep(for: interval)
+            refreshAvailability()
+        }
+    }
 }

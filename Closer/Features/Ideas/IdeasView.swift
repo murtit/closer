@@ -64,7 +64,8 @@ struct IdeasView: View {
             }
         }
         .tint(.closerAccent)
-        .onAppear { services.refreshAvailability() }
+        // Keeps checking while the model downloads, so the screen switches to the ideas by itself.
+        .task { await services.waitWhileModelLoads() }
     }
 
     // MARK: - Header
@@ -231,19 +232,30 @@ struct IdeasView: View {
     // MARK: - Unavailable
 
     private var unavailableCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(
-                services.availability == .notReady ? "Apple Intelligence wird vorbereitet" : "Apple Intelligence ist aus",
-                systemImage: "apple.intelligence"
-            )
+        let isLoading = services.availability == .notReady
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                if isLoading {
+                    ProgressView()
+                } else {
+                    Image(systemName: "apple.intelligence")
+                }
+                Text(isLoading ? "Apple Intelligence wird vorbereitet" : "Apple Intelligence ist aus")
+            }
             .font(.headline)
-            Text(services.availability == .notReady
-                 ? "Das Modell wird gerade auf dein iPhone geladen. Sobald es bereit ist, findest du hier Ideen."
+            Text(isLoading
+                 ? "iOS lädt das Sprachmodell gerade auf dein iPhone. Das kann beim ersten Mal eine Weile dauern, am schnellsten mit WLAN und am Strom. Sobald es fertig ist, erscheinen hier die Ideen von selbst."
                  : "Für Ideen braucht Closer Apple Intelligence. Du kannst es in den Einstellungen unter „Apple Intelligence & Siri“ einschalten.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            if services.availability == .notEnabled, let url = URL(string: UIApplication.openSettingsURLString) {
+            if isLoading {
+                Text("Den Fortschritt siehst du in den Einstellungen unter „Apple Intelligence & Siri“.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if !isLoading, let url = URL(string: UIApplication.openSettingsURLString) {
                 Button("Einstellungen öffnen") { openURL(url) }
                     .font(.subheadline.weight(.semibold))
             }

@@ -7,6 +7,9 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Fixed
+- Ideen: Lädt Apple Intelligence das Sprachmodell noch, prüft der Ideen-Screen jetzt alle paar Sekunden erneut und zeigt die Ideen von selbst, sobald das Modell bereit ist. Bisher blieb der Hinweis stehen, bis man den Screen schloss und neu öffnete. Der Hinweis erklärt ausserdem, wo man den Download-Fortschritt sieht.
+
 ### Changed
 - Bundle-ID von `ch.murtit.closer` auf `ch.murtit.closer.app` geändert (Test-Targets entsprechend `ch.murtit.closer.app.tests` und `ch.murtit.closer.app.uitests`), weil `ch.murtit.closer` noch bei einem anderen Apple-Developer-Team registriert ist. Auf dem Gerät erscheint Closer dadurch als neue App; Daten der alten Installation werden nicht übernommen.
 
