@@ -45,4 +45,5 @@ struct RootView: View {
 #Preview {
     RootView()
         .environment(PeopleViewModel())
+        .environment(IdeaServices())
 }

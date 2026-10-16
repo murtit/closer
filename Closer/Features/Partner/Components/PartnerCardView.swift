@@ -7,6 +7,8 @@ struct PartnerCardView: View {
     let person: Person
     var now: Date = Date()
     let onAddAnniversary: () -> Void
+    /// Opens ideas for a date or a gift; `nil` hides the button (no Apple Intelligence).
+    var onShowIdeas: (() -> Void)?
 
     private var anniversary: Anniversary? { person.partnerAnniversary }
 
@@ -25,15 +27,19 @@ struct PartnerCardView: View {
                     addAnniversaryButton
                 }
                 Spacer(minLength: 0)
+                if let onShowIdeas {
+                    Button(action: onShowIdeas) {
+                        roundIcon("sparkles")
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Ideen für \(person.name)")
+                    .accessibilityIdentifier("partnerIdeasButton")
+                }
                 if let messageURL = person.messageURL {
                     Button {
                         openURL(messageURL)
                     } label: {
-                        Image(systemName: "heart.text.square.fill")
-                            .font(.title3)
-                            .frame(width: 44, height: 44)
-                            .background(Circle().fill(Color.closerOnPartner.opacity(0.1)))
-                            .foregroundStyle(.closerPartnerAccent)
+                        roundIcon("heart.text.square.fill")
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(person.name) eine liebe Nachricht schreiben")
@@ -90,6 +96,14 @@ struct PartnerCardView: View {
         .contentShape(Rectangle())
     }
 
+    private func roundIcon(_ systemName: String) -> some View {
+        Image(systemName: systemName)
+            .font(.title3)
+            .frame(width: 44, height: 44)
+            .background(Circle().fill(Color.closerOnPartner.opacity(0.1)))
+            .foregroundStyle(.closerPartnerAccent)
+    }
+
     private func countdown(for anniversary: Anniversary) -> some View {
         let isToday = anniversary.isToday(now)
         return HStack(spacing: 8) {
@@ -143,7 +157,8 @@ struct PartnerCardView: View {
                 phoneNumber: "+41 79 123 45 67",
                 anniversary: Anniversary(date: Calendar.current.date(byAdding: .day, value: -1072, to: Date())!)
             ),
-            onAddAnniversary: { }
+            onAddAnniversary: { },
+            onShowIdeas: { }
         )
         .padding()
     }
