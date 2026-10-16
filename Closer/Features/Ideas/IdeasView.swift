@@ -4,7 +4,6 @@ import SwiftUI
 /// the device. Each idea links to matching places nearby on an Apple Maps map.
 struct IdeasView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.openURL) private var openURL
     @Environment(PeopleViewModel.self) private var people
     @Environment(IdeaServices.self) private var services
     @State private var viewModel: IdeasViewModel
@@ -232,32 +231,22 @@ struct IdeasView: View {
     // MARK: - Unavailable
 
     private var unavailableCard: some View {
-        let isLoading = services.availability == .notReady
-        return VStack(alignment: .leading, spacing: 12) {
+        let availability = services.availability
+        return VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 10) {
-                if isLoading {
-                    ProgressView()
-                } else {
-                    Image(systemName: "apple.intelligence")
-                }
-                Text(isLoading ? "Apple Intelligence wird vorbereitet" : "Apple Intelligence ist aus")
+                Image(systemName: "apple.intelligence")
+                Text("Apple Intelligence: \(availability.statusTitle)")
             }
             .font(.headline)
-            Text(isLoading
-                 ? "iOS lädt das Sprachmodell gerade auf dein iPhone. Das kann beim ersten Mal eine Weile dauern, am schnellsten mit WLAN und am Strom. Sobald es fertig ist, erscheinen hier die Ideen von selbst."
-                 : "Für Ideen braucht Closer Apple Intelligence. Du kannst es in den Einstellungen unter „Apple Intelligence & Siri“ einschalten.")
+            AppleIntelligenceChecklist(availability: availability)
+            Text(availability == .notReady
+                 ? availability.statusMessage + " Sobald es fertig ist, erscheinen hier die Ideen von selbst."
+                 : availability.statusMessage)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            if isLoading {
-                Text("Den Fortschritt siehst du in den Einstellungen unter „Apple Intelligence & Siri“.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            if !isLoading, let url = URL(string: UIApplication.openSettingsURLString) {
-                Button("Einstellungen öffnen") { openURL(url) }
-                    .font(.subheadline.weight(.semibold))
+            if availability.offersSettings {
+                AppleIntelligenceSettingsButton()
             }
         }
         .padding(18)

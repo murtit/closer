@@ -7,6 +7,9 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Added
+- **Apple-Intelligence-Status**: In den Einstellungen zeigt der neue Abschnitt *Apple Intelligence*, ob dieses iPhone Apple Intelligence unterstützt, ob es eingeschaltet ist und ob das Sprachmodell geladen ist (wird während des Ladens laufend aktualisiert). Dieselben drei Prüfungen stehen im Ideen-Screen, solange Ideen nicht verfügbar sind. „Einstellungen öffnen“ führt in die Einstellungen-App (zur Seite von Closer, weil iOS keinen offiziellen Link direkt zu „Apple Intelligence & Siri“ anbietet); der Hinweis darunter erklärt den Weg von dort.
+
 ### Fixed
 - Ideen: Lädt Apple Intelligence das Sprachmodell noch, prüft der Ideen-Screen jetzt alle paar Sekunden erneut und zeigt die Ideen von selbst, sobald das Modell bereit ist. Bisher blieb der Hinweis stehen, bis man den Screen schloss und neu öffnete. Der Hinweis erklärt ausserdem, wo man den Download-Fortschritt sieht.
 
