@@ -7,7 +7,7 @@
 | Plattform | iOS / iPadOS 26.5+ |
 | Sprache | Swift 5 (Swift 6 Concurrency-Features aktiv), SwiftUI, Observation |
 | Tooling | Xcode 26.6+ |
-| Bundle ID | `ch.murtit.closer` |
+| Bundle ID | `ch.murtit.closer.app` |
 | Version | siehe [`CHANGELOG.md`](CHANGELOG.md) |
 
 ## Schnellstart

@@ -30,7 +30,7 @@ enum DemoData {
         return PeopleViewModel(
             store: store,
             notifications: DemoNotificationScheduler(),
-            defaults: UserDefaults(suiteName: "ch.murtit.closer.demo") ?? .standard,
+            defaults: UserDefaults(suiteName: "ch.murtit.closer.app.demo") ?? .standard,
             sounds: SoundLibrary(directory: soundsDirectory)
         )
     }
