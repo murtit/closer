@@ -399,6 +399,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Closer;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Closer zeigt dir Restaurants, Geschäfte und Orte in deiner Nähe, die zu einer Idee passen.";
 				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Closer erinnert dich an kleine Gesten, damit dir wichtige Menschen nahe bleiben.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -433,6 +434,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Closer;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Closer zeigt dir Restaurants, Geschäfte und Orte in deiner Nähe, die zu einer Idee passen.";
 				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Closer erinnert dich an kleine Gesten, damit dir wichtige Menschen nahe bleiben.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

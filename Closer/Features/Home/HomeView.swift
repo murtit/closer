@@ -2,9 +2,11 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(PeopleViewModel.self) private var viewModel
+    @Environment(IdeaServices.self) private var ideaServices
     @State private var showingAddPerson = false
     @State private var showingSettings = false
     @State private var showingAnniversaryForm = false
+    @State private var showingIdeas = false
 
     // MARK: - Computed helpers
 
@@ -51,9 +53,11 @@ struct HomeView: View {
                     headerView
 
                     if let partner = viewModel.partner {
-                        PartnerCardView(person: partner) {
-                            showingAnniversaryForm = true
-                        }
+                        PartnerCardView(
+                            person: partner,
+                            onAddAnniversary: { showingAnniversaryForm = true },
+                            onShowIdeas: ideaServices.availability.isShown ? { showingIdeas = true } : nil
+                        )
                     }
 
                     if let next = upcoming.first {
@@ -83,6 +87,11 @@ struct HomeView: View {
             .sheet(isPresented: $showingAnniversaryForm) {
                 if let partner = viewModel.partner {
                     AnniversaryFormView(personID: partner.id, anniversary: partner.anniversary)
+                }
+            }
+            .sheet(isPresented: $showingIdeas) {
+                if let partner = viewModel.partner {
+                    IdeasView(viewModel: IdeasViewModel(person: partner, generator: ideaServices.generator))
                 }
             }
             .sheet(isPresented: $showingAddPerson) {
@@ -269,4 +278,5 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environment(PeopleViewModel())
+        .environment(IdeaServices())
 }

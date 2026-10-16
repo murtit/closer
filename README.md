@@ -20,7 +20,7 @@ open Closer.xcodeproj
 
 Scheme **Closer** wählen, Simulator auswählen, `⌘R` zum Starten, `⌘U` für die Tests.
 
-Für ein echtes Gerät wird ein Apple-Developer-Team benötigt (Target › *Signing & Capabilities*). Es sind keine Umgebungsvariablen, API-Keys oder Abhängigkeiten von Drittanbietern nötig.
+Für ein echtes Gerät wird ein Apple-Developer-Team benötigt (Target › *Signing & Capabilities*). Es sind keine Umgebungsvariablen, API-Keys oder Abhängigkeiten von Drittanbietern nötig. Die KI-Ideen laufen nur auf Geräten mit Apple Intelligence (iPhone 15 Pro und neuer); im Simulator nur, wenn der Mac Apple Intelligence unterstützt und es eingeschaltet ist.
 
 Tests über die Kommandozeile:
 
@@ -49,6 +49,8 @@ closer/
 │   ├── Features/               # Ein Ordner pro Feature (View + ViewModel)
 │   │   ├── Home/
 │   │   │   └── Components/     # Feature-spezifische Unter-Views
+│   │   ├── Ideas/              # KI-Ideen (Apple Intelligence) und Karte mit Orten
+│   │   │   └── Components/
 │   │   ├── Partner/            # Jahrestag und Partner-Karte
 │   │   │   └── Components/
 │   │   └── People/
@@ -74,6 +76,8 @@ Das Projekt nutzt **File-System-Synchronized Groups** (Xcode 16+): Neue Dateien 
 - Erinnerungen sind lokale Benachrichtigungen (`UNCalendarNotificationTrigger`), eine pro Erinnerung. iOS erlaubt maximal 64 geplante Benachrichtigungen pro App.
 - Es gibt höchstens eine:n Partner:in (`PeopleViewModel.canBePartner`). Ihr bzw. sein Jahrestag (`Anniversary`) erzeugt jährliche Erinnerungen für den Tag selbst und jeden Vorlauf (Standard: 14 und 3 Tage), mit festen IDs, damit sie beim Ändern sauber ersetzt werden. Sie werden nicht unter den eigenen Erinnerungen gespeichert, sondern bei Bedarf abgeleitet (`Person.allReminders()`).
 - Pro Person lässt sich ein Benachrichtigungston wählen (`NotificationSound`, gespeichert in `Person.notificationSound`; fehlt der Wert, spielt der iOS-Standardton). Alle Erinnerungen dieser Person, auch die des Jahrestags, werden mit diesem Ton geplant.
+- **Ideen** für Dates, Geschenke und Unternehmungen schreibt Apples On-Device-Sprachmodell (*Foundation Models*, Apple Intelligence): kostenlos, ohne API-Key und ohne dass Eingaben das iPhone verlassen. `FoundationModelIdeaGenerator` erzeugt mit `@Generable`-Typen strukturierte Ideen (Emoji, Titel, Beschreibung, Suchbegriff für Apple Karten), `IdeaPrompt` baut den Prompt aus Beziehung, Budget, Hinweis und Jahrestag. Auf iPhones ohne Apple Intelligence (`IdeaAvailability.unsupported`) ist die Funktion ganz ausgeblendet; ist Apple Intelligence nur ausgeschaltet oder das Modell noch nicht geladen, zeigt Closer einen Hinweis. Die Verfügbarkeit wird bei jedem Wechsel in den Vordergrund neu gelesen.
+- Zu jeder Idee zeigt eine **Apple-Karte** (MapKit) passende Orte in der Nähe: `MKLocalSearch` sucht den Suchbegriff der Idee rund um den Standort (`LocationProvider`, Berechtigung „Beim Verwenden der App“), ohne Standort rund um Zürich bzw. den Kartenausschnitt. Ein Tipp auf einen Ort öffnet Apples Ortskarte mit Öffnungszeiten und Route. Modell, Ortssuche und Standort stecken in `IdeaServices` und werden per `.environment(_:)` injiziert; mit `-demo-data` liefern `DemoIdeaGenerator` und `DemoPlaceSearch` feste Ergebnisse.
 - Neue Features bekommen einen eigenen Ordner unter `Features/`. Geteilte Modelle gehören nach `Core/`, geteilte UI-Bausteine nach `DesignSystem/`.
 
 ### Design & App-Icon

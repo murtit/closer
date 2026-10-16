@@ -80,6 +80,23 @@ final class ScreenshotTests: XCTestCase {
         settingsButton.tap()
         XCTAssertTrue(app.navigationBars["Einstellungen"].waitForExistence(timeout: 5))
         snapshot("08-einstellungen", appearance)
+        app.navigationBars["Einstellungen"].buttons["Fertig"].tap()
+
+        // Ideas come from fixed demo ideas, so the screenshots do not depend on Apple Intelligence.
+        let ideasButton = app.buttons["partnerIdeasButton"]
+        XCTAssertTrue(ideasButton.waitForExistence(timeout: 5))
+        ideasButton.tap()
+        XCTAssertTrue(app.navigationBars["Ideen"].waitForExistence(timeout: 5))
+        app.buttons["findIdeasButton"].tap()
+        XCTAssertTrue(app.staticTexts["Pasta-Abend wie in Rom"].waitForExistence(timeout: 10))
+        snapshot("09-ideen", appearance)
+
+        app.buttons["ideaPlacesButton"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Pasta-Abend wie in Rom"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["placeCard"].firstMatch.waitForExistence(timeout: 10))
+        // Map tiles load after the places; give them a moment more than other screens.
+        Thread.sleep(forTimeInterval: 2)
+        snapshot("10-orte", appearance)
     }
 
     // MARK: - Helpers

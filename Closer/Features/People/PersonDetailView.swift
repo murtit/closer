@@ -3,6 +3,7 @@ import SwiftUI
 /// One person: quick contact actions, their reminders and further suggestions.
 struct PersonDetailView: View {
     @Environment(PeopleViewModel.self) private var viewModel
+    @Environment(IdeaServices.self) private var ideaServices
     @Environment(\.dismiss) private var dismiss
 
     let personID: Person.ID
@@ -11,6 +12,7 @@ struct PersonDetailView: View {
     @State private var showingNewReminder = false
     @State private var editingReminder: Reminder?
     @State private var showingAnniversaryForm = false
+    @State private var showingIdeas = false
 
     var body: some View {
         if let person = viewModel.person(withID: personID) {
@@ -25,6 +27,9 @@ struct PersonDetailView: View {
             header(for: person)
             if person.isPartner {
                 anniversarySection(for: person)
+            }
+            if ideaServices.availability.isShown {
+                ideasSection(for: person)
             }
             remindersSection(for: person)
             if !person.openSuggestions.isEmpty {
@@ -51,6 +56,9 @@ struct PersonDetailView: View {
         }
         .sheet(isPresented: $showingAnniversaryForm) {
             AnniversaryFormView(personID: personID, anniversary: person.anniversary)
+        }
+        .sheet(isPresented: $showingIdeas) {
+            IdeasView(viewModel: IdeasViewModel(person: person, generator: ideaServices.generator))
         }
     }
 
@@ -131,6 +139,42 @@ struct PersonDetailView: View {
         .listRowBackground(Color.closerSurface)
     }
 
+    private func ideasSection(for person: Person) -> some View {
+        Section {
+            Button {
+                showingIdeas = true
+            } label: {
+                HStack(spacing: 14) {
+                    Image(systemName: "sparkles")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Color.closerOnAccentSoft)
+                        .frame(width: 42, height: 42)
+                        .background(Circle().fill(Color.closerAccentSoft))
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(person.isPartner ? "Ideen für Dates und Geschenke" : "Ideen für Treffen und Geschenke")
+                            .foregroundStyle(.primary)
+                        Text(ideaServices.availability == .available
+                             ? "Von Apple Intelligence, mit passenden Orten in der Nähe"
+                             : "Braucht Apple Intelligence")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(.vertical, 2)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .accessibilityIdentifier("ideasRow")
+        } header: {
+            Text("Ideen")
+        }
+        .listRowBackground(Color.closerSurface)
+    }
+
     private func remindersSection(for person: Person) -> some View {
         Section {
             ForEach(person.reminders) { reminder in
@@ -195,4 +239,5 @@ struct PersonDetailView: View {
         PersonDetailView(personID: UUID())
     }
     .environment(viewModel)
+    .environment(IdeaServices())
 }
