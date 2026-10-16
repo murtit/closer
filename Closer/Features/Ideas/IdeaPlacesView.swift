@@ -10,8 +10,9 @@ struct IdeaPlacesView: View {
     @State private var position: MapCameraPosition = .region(IdeaPlacesViewModel.region(around: IdeaPlacesViewModel.fallbackCenter))
     @State private var selection: MKMapItem?
     @State private var visibleRegion: MKCoordinateRegion?
-    /// Set while the camera moves to fit the results, so that move does not count as the user's.
-    @State private var isFittingCamera = false
+    /// Until when camera moves count as fitting the results and not as the user's. Tiles can
+    /// load slowly, so the fit may end in several steps.
+    @State private var fitDeadline: Date?
     /// Whether the last search was around the user and not the fallback.
     @State private var searchedAroundUser = false
 
@@ -23,8 +24,12 @@ struct IdeaPlacesView: View {
     private var location: LocationProvider { services.location }
 
     private var offersSearchHere: Bool {
-        guard !isFittingCamera, let visibleRegion else { return false }
+        guard !isFitting, let visibleRegion else { return false }
         return viewModel.shouldOfferSearch(in: visibleRegion)
+    }
+
+    private var isFitting: Bool {
+        fitDeadline.map { Date() < $0 } ?? false
     }
 
     var body: some View {
@@ -44,9 +49,8 @@ struct IdeaPlacesView: View {
             MapScaleView()
         }
         .onMapCameraChange(frequency: .onEnd) { context in
-            if isFittingCamera {
+            if isFitting {
                 viewModel.markSearched(context.region)
-                isFittingCamera = false
             }
             visibleRegion = context.region
         }
@@ -163,15 +167,9 @@ struct IdeaPlacesView: View {
 
     private func search(in region: MKCoordinateRegion) async {
         await viewModel.search(in: region)
-        isFittingCamera = true
+        fitDeadline = Date().addingTimeInterval(3)
         withAnimation(.smooth) {
             position = viewModel.places.isEmpty ? .region(region) : .automatic
-        }
-        // If the camera was already in place it does not move, and no change arrives to end the fit.
-        try? await Task.sleep(for: .seconds(1.5))
-        if isFittingCamera {
-            isFittingCamera = false
-            viewModel.markSearched(visibleRegion ?? region)
         }
     }
 }

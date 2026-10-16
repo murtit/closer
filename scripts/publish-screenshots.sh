@@ -80,6 +80,8 @@ label() {
         06-jahrestag) echo "Jahrestag" ;;
         07-benachrichtigungston) echo "Benachrichtigungston" ;;
         08-einstellungen) echo "Einstellungen" ;;
+        09-ideen) echo "Ideen" ;;
+        10-orte) echo "Orte in der Nähe" ;;
         *) echo "$1" ;;
     esac
 }
