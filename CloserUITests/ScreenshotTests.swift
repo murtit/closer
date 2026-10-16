@@ -55,6 +55,8 @@ final class ScreenshotTests: XCTestCase {
         app.navigationBars["Erinnerung"].buttons["Abbrechen"].tap()
 
         XCTAssertTrue(app.navigationBars["Lea Brunner"].waitForExistence(timeout: 5))
+        // Tapping the reminder scrolled the list; the anniversary row may now sit under the bar.
+        app.swipeDown()
         app.buttons["anniversaryRow"].tap()
         XCTAssertTrue(app.navigationBars["Jahrestag"].waitForExistence(timeout: 5))
         snapshot("06-jahrestag", appearance)
